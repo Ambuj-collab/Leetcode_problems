@@ -1,0 +1,35 @@
+Problem Description:
+---------------------
+In this problem, you are tasked with finding an order in which you can take a set number of courses such that for every course you are taking, you have already completed all its prerequisites. You are given two inputs:
+
+numCourses which is an integer representing the total number of courses you need to take, numbered from 0 to numCourses - 1.
+prerequisites which is a list of pairs [a_i, b_i], where a_i is a course that you want to take and b_i is the course that must be taken before a_i.
+Your objective is to return a list representing the order in which you can take the courses. If there are multiple correct orders, any one of them is a valid answer. If it's impossible to complete all the courses (for example, because of a cycle in the prerequisite structure), you should return an empty list.
+
+This problem can be thought of as a graph problem where each course is a node in the graph, and the prerequisites are directed edges between nodes. The task is to find a topological sort of this graph, which is an ordering of its nodes such that for every directed edge u → v, node u comes before node v in the ordering.
+
+
+Intuition:
+---------------
+The solution to this problem involves using a graph data structure to represent the prerequisite courses relationship and then performing a topological sort on this graph. The key steps to solve this problem are as follows:
+
+1) Create a graph representation:
+Each course is represented as a node.
+A directed edge from node b_i to node a_i is added for each prerequisite pair [a_i, b_i]. This indicates that course b_i is a prerequisite for course a_i.
+
+2) Determine the in-degree for each node:
+The in-degree of a node is the number of edges coming into it. In this scenario, it represents the number of prerequisites for a course.
+
+3) Initiate a queue and add all nodes with an in-degree of 0 to it:
+These are the courses that don't have any prerequisites, which can be taken first.
+
+4) While the queue is not empty, process the nodes:
+Dequeue a node (a course with no prerequisites) and add it to the solution list, indicating the course can be taken.
+For each neighbor (course that has the just-taken course as prerequisite), decrement its in-degree (since one of its prerequisites has been taken).
+If a neighbor's in-degree becomes 0, enqueue it. This signifies that all its prerequisites are met, and it can be taken.
+
+5) Check if the number of courses taken matches the total number of courses.
+If they match, return the solution list as a valid order.
+If they do not match, a cycle must exist in the graph, and thus it is impossible to complete all courses. Return an empty list.
+
+Using this strategy, the given implementation builds the graph using a hashmap (g) for adjacency lists and an array (indeg) for in-degree counts. It then uses a queue (q) to identify courses with no prerequisites and processes them to uncover an acceptable course order (ans), which is returned as the solution.

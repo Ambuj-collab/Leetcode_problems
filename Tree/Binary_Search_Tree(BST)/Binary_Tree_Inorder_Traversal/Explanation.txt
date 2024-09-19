@@ -1,0 +1,48 @@
+⭐️ Points
+----------
+
+For Inorder, we do something between left and right.
+For Preorder, we do something before left and right.
+For Postorder, we do something after left and right.
+
+
+Step by step Algorithm of stack solution:
+---------------------------------------------
+1) Initialization:
+Initialize an empty list res to store the result (in-order traversal).
+Initialize an empty stack stack for iterative traversal.
+	res = []
+	stack = []
+
+2) Traversal Loop:
+Start a loop that continues until either the current node (root) is not None or the stack is not empty.
+This loop handles both the traversal to the leftmost node and the backtracking to the parent node.
+	while root or stack:
+
+3) Traverse to Leftmost Node:
+Within the loop, another nested loop is used to traverse to the leftmost node of the current subtree.
+During this process, each encountered node is pushed onto the stack.
+This ensures that we move as far left as possible in the tree.
+	while root:
+		stack.append(root)
+		root = root.left
+
+4) Pop Node from Stack:
+Once we reach the leftmost node (or a leaf node), we pop the last node from the stack. This node is the most recently left-visited node.
+We assign this node to root.
+	root = stack.pop()
+
+5) Append Node Value to Result:
+Append the value of the popped node to the result list res. This is the in-order traversal order.
+	res.append(root.val)
+
+6) Move to Right Subtree:
+Move to the right subtree of the current node. This step is crucial for continuing the in-order traversal.
+	root = root.right
+
+7) End of Loop:
+Repeat the loop until all nodes are processed.
+
+8) Return Result List:
+After the traversal is complete, return the final result list res.
+	return res

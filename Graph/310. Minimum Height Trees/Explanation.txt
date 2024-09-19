@@ -1,0 +1,26 @@
+Problem Description:
+-------------------------
+In this LeetCode problem, we're given what is known as a tree in the context of graph theory. A tree is a type of graph where there is exactly one path between any two nodes, and, importantly, there are no cycles, meaning no path starts and ends at the same node unless the path is zero-length (does not move from the starting node).
+
+We are provided with two inputs:
+
+1) n: the number of nodes in the tree, where the nodes are labeled from 0 to n - 1, and
+2) edges: an array of n - 1 edges with each edge given as a pair [a_i, b_i] representing an undirected connection between nodes a_i and b_i.
+The task is to pick a node that, when used as the root, results in a tree of the minimum possible height. The height of a tree, in this case, is defined as the number of edges in the longest path from the chosen root to any leaf node (a leaf node is a node with no children).
+
+We are asked not just to find the height but to return a list of the labels of all nodes that can serve as roots for such minimum height trees (MHTs). There can be more than one MHT and we need to list all of their root labels.
+
+
+
+Intuition:
+--------------
+The key insight for solving this problem is understanding that the root of an MHT will be near the center of the tree. If we pick a node on the periphery of the tree (like a leaf), the height will be larger because it takes more edges to reach the opposite side of the tree. The MHTs can be found by iteratively trimming the leaves until one or two nodes remain, which will be our answer.
+
+The process is somewhat similar to peeling an onion; we remove the outer layer (leaves) one by one until we reach the core. Here's how it breaks down:
+
+Identify all the leaf nodes (nodes with only one connection) in the tree.
+Remove the leaf nodes from the tree, along with their edges, to expose a new layer of leaf nodes.
+Repeat the process until one or two nodes remain. These nodes will be the roots of the MHTs.
+Why one or two? Because if a tree has an odd number of nodes, there will be one center node, while a tree with an even number of nodes could have two central nodes.
+
+The provided solution translates this approach into code. A breadth-first search (BFS) is employed for the trimming process. A queue is used to process and trim leaves level by level, and the degree of each node is tracked to easily identify the leaves. When only one or two nodes are left, we've found our roots for the MHTs.

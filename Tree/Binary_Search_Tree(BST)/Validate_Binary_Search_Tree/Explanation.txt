@@ -1,0 +1,43 @@
+Approach:
+============
+
+        10
+       /  \
+      8    15
+          /  \
+         12  18
+Let's think about possible range of root value. It's easy right?
+
+8 < root(= 10) < 15
+But problem is we don't konw what number is minimum and maximum in algorithm, so my strategy is to put infinity numbers.
+
+negative infinity < root < infinity
+In that case, we can put any number at root node.
+
+Let's think about range of each node.
+
+10 → -i < 10 < i
+ 8 → -i <  8 < 10
+15 → 10 < 15 < i
+12 → 10 < 12 < 15
+18 → 15 < 18 < i
+
+i is infinity
+If we meet all condition, we can say this is valid binary search tree.
+
+Let's separate like this.
+
+Go Left
+ 8 → -i <  8 < 10
+12 → 10 < 12 < 15
+
+Go Right
+15 → 10 < 15 < i
+18 → 15 < 18 < i
+⭐️ Points
+
+When we go left, update maxinum value only. A minimum number will be the same number from parent.
+
+On the other hand, when we go right, update minimum number only. A maxinum number will be the same number from parent.
+
+At each node, we check the range and if we reach null, that path is valid binary serach tree.

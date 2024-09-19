@@ -1,0 +1,63 @@
+Problem Description:
+------------------------
+The problem gives us numCourses total number of courses, each labeled uniquely from 0 to numCourses - 1. We are also given an array of course pairs for prerequisites, where each pair [a, b] signifies that course a requires course b as a prerequisite. The goal is to determine if it is possible to complete all the courses fulfilling their respective prerequisites.
+
+To simplify: imagine you have a list of courses, each with dependencies on other courses. You can only take a course if all of its prerequisite courses have been completed. You need to figure out if you can schedule these courses in such a way that all can be finished.
+
+
+Intuition:
+-------------
+The intuition behind the solution is based on detecting a possible cyclic dependency among the courses which would make it impossible to complete all of them. If there's a cycle, you would be in a situation where to take course X you need to have completed course Y, but course Y similarly requires course X. This deadlock prevents completion of the courses.
+
+To solve this, we use topoogical sorting based on Kahn's algorithm, which is a strategy for sorting nodes in a directed graph. This approach works well here because prerequisites create a directed graph where courses are nodes and dependencies are edges.
+
+Breaking down the intuition step by step:
+
+We construct a directed graph where each node is a course, and edges represent prerequisites (a directed edge from course b to course a means b is a prerequisite for a).
+We count incoming edges (indegrees) for each node. If a node/course has no incoming edges, it means there are no prerequisites, and it can be taken immediately.
+We repeatedly pick and remove nodes with no incoming edges (representing courses with all prerequisites completed or no prerequisites at all) and remove all edges from these nodes to other nodes (simulating taking the course and fulfilling those prerequisites).
+If we manage to remove all nodes (take all courses), then it's possible to finish all courses.
+In more technical terms:
+
+We are using a graph (specifically a directed graph) to represent the dependencies between courses.
+A defaultdict is used to keep track of what courses depend on a given course.
+An array indeg maintains the count of prerequisites (incoming edges) for each course.
+A queue (deque) helps in processing the courses with zero incoming edges (prerequisites).
+We traverse the graph starting from nodes with zero indegrees, repeatedly reducing the indegrees of the dependent nodes and adding them to the queue when their indegre becomes zero.
+If we process (cnt) the same number of courses as are given by numCourses, we return true; else, a cycle must exist, and we return false.
+
+
+Solution Approach:
+--------------------
+The solution approach is genuinely inspired by the topological sorting algorithm. It uses several data structures and algorithms to implement the logic described in the Intuition section.
+
+Here are the main points of the implementation, outlined step by step:
+
+1) Graph Representation:
+A defaultdict for adjacency list representation of our directed graph: g = defaultdict(list).
+Each course is a node, and each element in the list represents the adjacent nodes. For example, if course b is a prerequisite for course a, then a will be in the adjacency list of b.
+
+2) In-Degree Array:
+An array indeg that represents the in-degree of each node (number of prerequisites for each course): indeg = [0] * numCourses.
+Whenever a prerequisite relation (edge) is added, we increment the in-degree count for course a.
+
+3) Building the Graph and In-Degree Array:
+We iterate through the prerequisites list, for each pair [a, b] we:
+	Add a to the adjacency list of b: g[b].append(a)
+	Increase the in-degree of a: indeg[a] += 1
+
+4) Processing Nodes with Zero In-Degrees:
+A queue q using deque is initialized with all courses that have zero in-degree.
+cnt variable is initialized to count the number of courses that we've been able to schedule (process).
+
+5) Topological Sort:
+While our queue q is not empty, we process the nodes (courses) inside our queue:
+	i = q.popleft(): we get a course i from the queue.
+	cnt += 1: increment our counter as we are able to take course i.
+	For each adjacent course j in our graph (g[i]):
+		Decrease the in-degree of j: indeg[j] -= 1
+		If the in-degree of j becomes zero, it means all prerequisites of j are satisfied, and we can add j to our queue: q.append(j)
+
+6) Return Value:
+After the whole process, if cnt matches numCourses, it means we were able to find a way to take all courses, and we return true.
+If cnt does not match numCourses, it implies there are courses with prerequisites that form a cycle so we could not process them, and we return false.

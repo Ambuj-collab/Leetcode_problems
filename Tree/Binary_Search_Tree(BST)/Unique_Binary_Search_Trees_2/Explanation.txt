@@ -1,0 +1,51 @@
+Given an integer ( n ), the task is to return all the structurally unique BST's (binary search trees) that have exactly ( n ) nodes of unique values from ( 1 ) to ( n ).
+
+
+Intuition Recursion & Dynamic Programming:
+--------------------------------------------
+The problem can be solved by utilizing the properties of a BST, where the left subtree has all values less than the root and the right subtree has values greater than the root. We can explore both recursive and dynamic programming (DP) approaches to generate all possible combinations of unique BSTs.
+
+
+Approach Short:
+-----------------
+Recursion: Recursively construct left and right subtrees and combine them with each root.
+Dynamic Programming: Use dynamic programming to store the result of subproblems (subtrees) and utilize them for constructing unique BSTs.
+
+
+Approach Differences:
+------------------------
+The recursive approach constructs the trees from scratch every time, while the DP approach reuses previously computed subtrees to avoid redundant work.
+
+
+Approach Recursion:
+----------------------
+The recursive approach involves the following steps:
+
+Base Case: If the start index is greater than the end index, return a list containing None. This represents an empty tree and serves as the base case for the recursion.
+
+Choose Root: For every number ( i ) in the range from start to end, consider ( i ) as the root of the tree.
+
+Generate Left Subtrees: Recursively call the function to generate all possible left subtrees using numbers from start to ( i-1 ). This forms the left child of the root.
+
+Generate Right Subtrees: Recursively call the function to generate all possible right subtrees using numbers from ( i+1 ) to end. This forms the right child of the root.
+
+Combine Subtrees: For each combination of left and right subtrees, create a new tree with ( i ) as the root and the corresponding left and right subtrees. Append this tree to the list of all possible trees.
+
+Return Trees: Finally, return the list of all trees generated.
+
+
+Approach Dynamic Programming:
+---------------------------------
+Initialization: Create a DP table dp where dp[i] will store all the unique BSTs with i nodes. Initialize dp[0] with a single None value representing an empty tree.
+
+Iterate Over Number of Nodes: For every number nodes from 1 to n, iterate and construct all possible trees with nodes number of nodes.
+
+Choose Root: For every possible root value within the current nodes, iterate and use the root to build trees.
+
+Use Previously Computed Subtrees: For the chosen root, use the previously computed dp[root - 1] for left subtrees and dp[nodes - root] for right subtrees.
+
+Clone Right Subtree: Since the right subtree's values will be affected by the choice of the root, clone the right subtree with an offset equal to the root value. The clone function handles this.
+
+Combine Subtrees: Create a new tree by combining the current root with the left and right subtrees. Append this tree to dp[nodes].
+
+Return Result: Finally, return the trees stored in dp[n].

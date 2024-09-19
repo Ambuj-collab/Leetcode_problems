@@ -1,0 +1,3 @@
+Approach:
+-----------
+Simply check 4 directions from every place and if we find the next target character, then move to that place. But problem is that we don't know current length of path(= word), so every time we move to a new place, count 1 as a length of path, so that when the path length is equal to input word, we can return True.
