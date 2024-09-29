@@ -1,0 +1,41 @@
+Problem Description:
+----------------------
+The problem asks us to find the next permutation of an array of integers in lexicographical order. A permutation refers to arranging the integers in a different sequence. If we consider all possible permutations of an array sorted in lexicographical order (dictionary order), the 'next permutation' is the permutation that comes directly after the current one in this sorted list. The challenge here is to generate this next permutation efficiently, using constant extra space (in-place).
+
+If the array is sorted in descending order, there is no next permutation, and the array should be rearranged to its lowest possible order (ascending order). We need to identify a method for transforming the arrangement of the array to the next permutation without generating all permutations.
+
+For example, given nums = [1,2,3], the next permutation is [1,3,2]. Given nums = [3,2,1], as it's the last permutation in lexicographical order, the next permutation would reset to [1,2,3].
+
+Intuition:
+------------
+To find the next permutation, we need to understand how permutations can be ordered lexicographically. We must identify the smallest change in the sequence that leads to a larger permutation. The process of finding the next permutation can typically be broken down into the following steps:
+
+a) Find the Longest Decreasing Suffix: We traverse from the end of the array moving backward, looking for the first pair of elements where the previous element is smaller than the next one (nums[i] < nums[i+1]). This identifies the boundary of the longest decreasing (non-increasing) suffix of the array.
+
+b) Identify the Pivot: The element just before the non-increasing suffix is called the pivot. If no pivot is found, it implies the entire array is non-increasing, which means we are at the last permutation and the next one is the first permutation (sorted in ascending order).
+
+c) Find a Successor to the Pivot: We again traverse from the end of the array moving backward, looking for the first element larger than the pivot. This successor will be the one we swap with the pivot to ensure we get the next larger permutation.
+
+d) Perform the Swap and Reverse the Suffix: As the suffix is in decreasing order, to get the next permutation, we swap the pivot with its successor and then reverse the suffix, turning it from decreasing to increasing, which gives us the least increase necessary to form the next permutation.
+
+The intuition behind this approach is that we want to increase the sequence as little as possible - only enough to make it the “next” permutation lexicographically. Swapping the pivot with the smallest element larger than it in the decreasing suffix ensures this minimal increase. Reversing the decreasing suffix guarantees that the sequence remains as small as possible after the pivot.
+
+Example Walkthrough:
+----------------------
+Let's walk through a small example to illustrate the solution approach. Consider the following array of integers:
+
+nums = [1, 3, 5, 4, 2]
+
+We want to find the next permutation for this array in lexicographical order. Following the steps mentioned in the solution approach:
+
+a) Traverse to Find the Pivot: We start from the end of the array and look for the first pair where the number is less than its successor. Traverse: 2 < 4 (stop here). So, the pivot is 3 at index 1.
+
+b) Find the Successor to the Pivot: We need to find the smallest number greater than the pivot 3, starting from the end of the array. Traverse: 2 (not greater), 4 (greater, stop here). The successor is 4 at index 3.
+
+c) Swap the Pivot and its Successor: We swap 3 and 4. The array is now: [1, 4, 5, 3, 2].
+
+d) Reverse the Suffix: We reverse the suffix starting right after the pivot's new position (index 1) till the end. The suffix is [5, 3, 2] and its reverse is [2, 3, 5]. The array after reversing the suffix is: [1, 4, 2, 3, 5].
+
+The resulting array [1, 4, 2, 3, 5] is the next permutation of the input array [1, 3, 5, 4, 2].
+
+By performing these steps, we successfully found the next permutation in lexicographical order using constant space and without the need to generate all permutations.

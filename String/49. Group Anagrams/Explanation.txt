@@ -1,0 +1,96 @@
+Approach:
+------------
+I'll show you two ways to solve this quesiton.
+
+Solution 1:
+==============
+Input: strs = ["eat","tea","tan","ate","nat","bat"]
+Simply, if we can sort each character of each string, we can group them.
+
+"eat"   →   "aet"
+"tea"   →   "aet"
+"tan"   →   "ant"
+"ate"   →   "aet"
+"nat"   →   "ant"
+"bat"   →   "abt"
+
+
+"aet": ["eat", "tea", "ate"] 
+"ant": ["tan", "nat"]
+"bat": ["abt"]
+We can create 3 groups with "aet", "ant" and "abt".
+
+Solution 2:
+=============
+Actually basic idea of solution 2 is the same as solution 1, but difference between solution 1 and solution 2 is that we don't have to sort each character.
+
+First of all, we create array with 26 length. 26 is number of alphablets. After that, we use ASCII values.
+
+Why do we use ASCII values?
+
+We use them to decide index numbers. To do that, we subtract ASCII value of "a" from ASCII value of all characters, that's beacause ASCII value of "a" is the smallest from "a" to "z".
+
+ASCII value of "a" is 97
+ASCII value of "b" is 98
+ASCII value of "c" is 99
+ASCII value of "d" is 100
+.
+.
+.
+ASCII value of "x" is 120
+ASCII value of "y" is 121
+ASCII value of "z" is 122
+
+Now we have array with 26 length. If we want to access "z" in the array which is the last index(= 25), we subtract 97 from 122.
+
+122 - 97 = 25
+
+Add +1 to index 25
+ a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1]
+
+If we want to access "d" which is index 3.
+
+100 - 97 = 3
+Add +1 to index 3
+
+ a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z
+[0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
+
+Let's see one example with "eat" and "tea"
+
+"eat"
+e = 101 - 97 = 4
+
+ a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z
+[0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
+a = 97 - 97 = 0
+ a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z
+[1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+
+t = 116 - 97 = 19
+ a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z
+[1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0] (= final)
+
+--------------------------
+"tea"
+t = 116 - 97 = 19
+
+ a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z
+[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0]
+
+e = 101 - 97 = 4
+ a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z
+[0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0]
+
+a = 97 - 97 = 0
+ a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z
+[1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0] (= final)
+Compare two final arrays.
+
+[1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0] (= "eat")
+[1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0] (= "tea")
+
+They are the same. That means they are the same group.

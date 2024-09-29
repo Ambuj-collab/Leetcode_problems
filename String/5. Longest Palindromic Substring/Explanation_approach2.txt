@@ -1,0 +1,25 @@
+When I think about a solution, I usually start with the small and simple input, because it's easy to understand and find a solution. But this time let's start with a big input.
+Input: "xkarqzghhgfedcbabcdefgzdekx"
+
+■ Question
+1) How did you find longest palindromic substring?
+
+I believe you choose one character, then expand the range to left and right at the same time. If you find longest palindromic substring directly, you are not a human. lol
+
+Actually, that is main idea of my solution today. But problem is that we don't know where to start. That's why we need to shift start point one by one.
+
+We need to shift a start point one by one to check longest palindromic substring.
+
+2) What is the start point?
+Since palindromic substring is like a mirror from some character, it's good idea to consider current index as a center of palindromic substring and expand left and right at the same time.
+
+For example,
+
+Input = "abcba"
+If we start from c, then
+
+"ab" "c" "ba"
+      i
+
+i = curerent index
+"ab" and "ba" is a mirror when "c" is center.

@@ -1,0 +1,50 @@
+Idea:
+--------
+In this problem, the redundant edge will be the one that links(both the nodes) together an already-linked node. To determine whether already-seen segments/portion of the graph have been connected, we can use a simple Union-Find (UF) implementation to keep track of the different segments.
+
+With UF, we must define two functions: union() and find(). The find() function will recursively trace a node's lineage back to its ultimate parent and update its value in the parent array (par), providing a shortcut for the next link.
+
+The union() function merges two segments by assigning the ultimate parent of one segment to another.
+
+We can iterate through edges and find both vertices of the edge to see if they belong to the same segment. If so, we've located our redundant edge and can return it. If not, we should merge the two different segments with union.
+
+Time Complexity: O(N) where N is the length of edges
+Space Complexity: O(N) for par and the recursion stack
+
+
+
+Intuition:
+-------------
+The intuition behind this solution is based on the Union-Find algorithm, which is a classic data structure for keeping track of disjoint sets. The idea is to iterate through the list of edges and connect the nodes using the Union operation. We start by initializing a parent array p, representing each node's parent in the disjoint set. Initially, each node is its own parent, indicating that they are each in separate sets.
+
+As we process the edges, we use a Find operation, implemented as the find function, to determine the set representative (parent) for each node. If the nodes connected by the current edge already have the same parent, it means that adding this edge would form a cycle, which is contrary to the tree definition. When we identify such an edge, we know it’s redundant and must be removed.
+
+The clever part of the algorithm is the use of path compression in the Find operation. This optimization steps speeds up subsequent queries for the set representative by making each node along the path point to the ultimate parent directly.
+
+Therefore, when we come across an edge connecting two nodes that are already in the same set (have the same parent), this edge is the redundant one, and we should return it as the answer. In the case that we process all edges without returning any, though highly unlikely for this problem's constraints, we return an empty list. However, since the problem states there's always one additional edge, we're guaranteed to find a redundant connection during our iteration through the edge list.
+
+
+Example Walkthrough:
+------------------------
+Let's use a small example graph to illustrate the solution approach as described. Suppose our graph, which was originally a tree, has 4 nodes, and the edges array is as follows: [[1, 2], [2, 3], [3, 1], [4, 3]]. We can already see that there is a cycle formed by the edges [1, 2], [2, 3], and [3, 1]. According to the problem statement, we need to find the redundant edge that appears last in the edges list, which upon a preliminary look seems to be [3, 1].
+
+1) Initialization:
+	We initialize our parent array p with enough space for our 4 nodes (in reality, our solution sets this up for more nodes, but for simplicity, here we'll limit it to the nodes we have). Thus, p = [0, 1, 2, 3, 4] (we include 0 just to match the node indices with their parent indices for convenience).
+
+2) Union-Find Algorithm:
+	We iterate through the edges array using the find and union operations as described:
+
+	For the first edge [1, 2], we find the parents of 1 and 2, which are themselves, so we unite them by setting p[find(1)] = find(2). Now p becomes [0, 2, 2, 3, 4].
+
+	For the second edge [2, 3], we find the parents of 2 and 3, which are 2 and 3 respectively. Since they are different, we unite them by setting p[find(2)] = find(3). Now p becomes [0, 3, 2, 3, 4] and after path compression [0, 3, 3, 3, 4].
+
+	For the third edge [3, 1], we find the parents of 3 and 1. Both are 3 due to the path compression that has already occurred, indicating we've encountered a cycle. As this is the redundant edge we're looking for, we immediately return [3, 1].
+
+	The fourth edge [4, 3] does not get processed as we've already found and returned the redundant edge in the step above.
+
+3) Returning the Result:
+	We successfully find that [3, 1] is the redundant edge that creates a cycle in the graph.
+
+	The function returns [3, 1] as the answer, which is the edge that must be removed to eliminate the cycle and restore the graph to a proper tree.
+
+	In this example, we can see that the Union-Find algorithm effectively identifies the edge causing a cycle due to the immediate parent check in the find operation, assisted by the path compression that optimizes this check as we progress through the array of edges.

@@ -1,0 +1,61 @@
+Intuition:
+------------
+Iterate through from the end
+
+
+Question:
+------------
+1) How should we iterate through the input arrays?
+
+My answer is to iterate through from the end. Why?
+That's because we have some numbers at index 0, 1 and 2 in nums1. The smallest number is 1 in nums1, the second smallest is 2 in nums1. The next smallest is 2 in nums2. In that case, the nums1 array becomes
+[1,2,2,0,0,0]
+temp = 3
+
+We have to keep 3 with variable or something, because we use 3 later. That is tough a bit right?
+
+But if we start from end, we have kind of available positions which are index 3, 4 and 5 in nums1. We can simply put the numbers without keeping numbers. We know that nums1 and nums2 are sorted in non-decreasing(i.e.,increasing) order. All we have to do is to compare the last numbers in both arrays.
+
+Let's see one by one!
+
+             ↓     r
+nums1 = [1,2,3,0,0,0], m = 3,
+nums2 = [2,5,6], n = 3
+             ↑
+
+r is right position where we should put the next biggest number.
+First of all, compare 3 with 6. 6 is bigger than 3. Put 6 at right position and move r and the pointer in nums2 to the next.
+
+Compare 3 with 5.
+     ↓   r
+[1,2,3,0,0,6]
+[2,5,6]
+   ↑
+
+Compare 3 with 2.
+     ↓ r
+[1,2,3,0,5,6]
+[2,5,6]
+ ↑
+
+Compare 2 with 2. Let me put 2 from nums2.
+   ↓ r
+[1,2,3,3,5,6]
+[2,5,6]
+ ↑
+
+   ↓ r
+[1,2,2,3,5,6]
+[2,5,6]
+↑
+
+Now the pointer for nums2 reached -1 index, so stop iteration. We successfully created [1,2,2,3,5,6].
+
+
+Question:
+-------------
+One more important question is that how many times do we have to iterate though nums1 and nums2.
+My answer is "until the pointer in nums2 reached -1."
+
+Now, when the pointer for nums2 reached -1, finish the iteration, because we know that numbers in nums1 are sorted in non-decreasing order, so we don't have to care about the rest of numbers in nums1.
+

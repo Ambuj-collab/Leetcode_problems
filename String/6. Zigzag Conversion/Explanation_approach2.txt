@@ -1,0 +1,53 @@
+Intuition:
+------------
+We can move up and down with 1 and -1
+
+
+Approach:
+-----------
+Let's think about this example.
+
+s = "abcdefghi", numRows = 4
+In this case, we put the characters of s like this.
+
+1 a     g → ag
+2 b   f h → bfh
+3 c e   i → cei
+4 d       → d
+
+return "agbfhceid"
+
+What we should do?
+
+Put characters on zigzag path
+Create strings horizontally
+
+Put characters on zigzag path:
+--------------------------------
+Seems like tough because we move diagonally but it's very simple.
+
+s = "abcdefghi", numRows = 4
+In this case
+
+"abcdefghi"
+ 123432123 (= row)
+
+All we have to do is that we just move up and down. More precisely, if we reach numsRows - 1, we move up next time and if we reach the first row, we move down next time.
+
+We will create direction variable to handle moving direction. When we move down, the variable has 1. On the other hand, when we move up, the variable has -1.
+
+Create strings horizontally:
+-------------------------------
+Now we have an array like this.
+
+1 a     g
+2 b   f h
+3 c e   i
+4 d      
+All we have to do is just to concatenate all characters in the same row. But there is a point here.
+
+Use 2d array instead of 1d array
+
+Why?
+
+That's because if we use 1d array(of course we can solve the question), we have to concatenate all characters in the same row when we add a new character which is O(n). We will repeat the process, length of s times, so that is O(n^2). n is the length of the string s. To avoid O(n^2), we use 2d array so that we just append a new character to the last position of a target row which is O(1). This enables us to keep O(n) time instead of O(n^2).

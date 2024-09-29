@@ -1,0 +1,49 @@
+Approach 1:
+=================
+
+Intuition:
+--------------
+The problem asks for finding the single element in an array where every other element appears twice. Sorting the array will align identical elements next to each other, making it easy to identify the element that doesn’t have a pair.
+
+
+Approach:
+--------------
+1) Sort the Array: First, sort the array so that identical elements are adjacent.
+2) Check Pairs: Iterate through the array in steps of two and compare each pair.
+	If a pair does not match, the single element is found.
+3) Edge Case: If all pairs are matched, the single element is the last one in the array.
+
+
+Complexity:
+--------------
+Time complexity: O(nlog(n))
+Space complexity: O(1)
+
+
+Approach 2:
+=================
+
+Intuition:
+------------
+The problem asks us to find the single number in an array where every other number appears twice. The first thought might be to use a hash map to count the occurrences of each number, but that would require extra space. Instead, we can take advantage of the properties of the XOR operation, which cancels out identical numbers and leaves us with the single number.
+
+Approach:
+------------
+The approach leverages the XOR (^) operation. XOR has the following properties:
+
+a ^ a = 0 for any integer a
+a ^ 0 = a for any integer a
+
+XOR is both commutative and associative, meaning the order of operations doesn't matter.
+
+Given these properties, if we XOR all the elements in the array, every number that appears twice will cancel itself out (since n ^ n = 0), and we will be left with the number that appears only once.
+
+Complexity:
+-------------
+Time complexity:
+The time complexity is O(n), where n is the length of the array. We are iterating through the array once.
+
+Space complexity:
+The space complexity is O(1), as we are only using a constant amount of extra space for the variable 'ans'.
+
+This approach is efficient in both time and space, making it ideal for solving this problem.

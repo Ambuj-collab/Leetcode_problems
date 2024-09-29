@@ -1,0 +1,19 @@
+Approach
+If you check all possible pairs, we need two loops which is O(n 
+2
+ ).
+
+Input: nums = [1,2,3,1]
+All possible pairs are
+
+[1,1][1,2][1,3][1,1] = 4
+[2,1][2,2][2,3][2,1] = 4
+[3,1][3,2][3,3][3,1] = 4
+[1,1][1,2][1,3][1,1] = 4
+
+total 16 pairs
+We need to iterate input array 16 times which is 4^2. 4 is the length of input array.
+
+Looping 16 times is not a big deal. But what if we have 100 or 1000 numbers as an input array. Do we loop 10000 or 1000000 times?
+
+That's why if we can improve the time complexity to O(n), we will loop 100 or 1000 at most. It's much much much better right?

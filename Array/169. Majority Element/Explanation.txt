@@ -1,0 +1,136 @@
+Approach 1:
+--------------
+Question. What data structure should we have to solve this question?
+
+It's obvious that we should have freqency of each number, right? But we cannot solve it with only freqency of each number.
+
+Why?
+
+Because we don't know current max frequency of number, so we should keep
+
+max frequency of specific number (Let's say majoirty)
+freqency of each number
+
+To keep information above, we use simple variable for max frequency and HashMap for freqency of each number, because we need to keep relations between each number and frequency and we have multiple data, so HashMap is good data structure for this question.
+
+Let' see one by one.
+
+Input: nums = [2,2,1,1,1,2,2]
+
+majority = 0
+res = 0
+
+First of all, we find 2 at index 0
+
+[2,2,1,1,1,2,2]
+ ↑
+
+HashMap = { 2: 1 }
+Then compare frequency of current number vs majority.
+
+1 vs 0
+Current number wins, so update majority and res.
+
+majority = 1 (= frequency of number 2 so far)
+res = 2
+
+Next, we find 2 again
+
+[2,2,1,1,1,2,2]
+   ↑
+
+HashMap = { 2: 2 }
+Then compare frequency of current number vs majority.
+
+2 vs 1
+Current number wins, so update majority and res.
+
+majority = 2 (= frequency of number 2 so far)
+res = 2
+
+Next, we find 1
+
+[2,2,1,1,1,2,2]
+     ↑
+
+HashMap = { 2: 2, 1: 1 }
+Then compare frequency of current number vs majority.
+
+1 vs 2
+Current number loses, so we don't update majority and res.
+
+majority = 2
+res = 2
+
+Next, we find 1
+
+[2,2,1,1,1,2,2]
+       ↑
+
+HashMap = { 2: 2, 1: 2 }
+Then compare frequency of current number vs majority.
+
+2 vs 2
+Current number loses, so we don't update majority and res.
+
+majority = 2
+res = 2
+
+Next, we find 1
+
+[2,2,1,1,1,2,2]
+         ↑
+
+HashMap = { 2: 2, 1: 3 }
+Then compare frequency of current number vs majority.
+
+3 vs 2
+Current number wins, so we update majority and res.
+
+majority = 3
+res = 1
+
+Next, we find 2
+
+[2,2,1,1,1,2,2]
+           ↑
+
+HashMap = { 2: 3, 1: 3 }
+Then compare frequency of current number vs majority.
+
+3 vs 3
+Current number loses, so we don't update majority and res.
+
+majority = 3
+res = 1
+
+Next, we find 2
+
+[2,2,1,1,1,2,2]
+             ↑
+
+HashMap = { 2: 4, 1: 3 }
+Then compare frequency of current number vs majority.
+
+4 vs 3
+Current number wins, so we update majority and res.
+
+majority = 4
+res = 2
+
+return 2
+
+
+Approach 2 - O(1) space:
+---------------------------
+We use the same idea of solution 1 above but actually, we don't have to use HashMap.
+
+We use two variables res and majority.
+res is return value.
+majority is frequency of majority number(= res).
+
+Every time current number is the same as res, we add +1 to majority. If not, we add -1 to majority.
+
+When majority is 0, it's time to change majority number(= res), because every time current number and res are different, we add -1 to majority, so if majority is 0, that means a current majority number(= res) is not the majority number anymore. That's why when majority is 0, update res with current number.
+
+If you understand solution 1, I hope we understand solution 2 very easily!

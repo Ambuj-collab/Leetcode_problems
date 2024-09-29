@@ -1,0 +1,61 @@
+Intuition:
+------------
+Using Binary Search twice for left most value and right most value
+
+
+Approach:
+------------
+How we think about a solution?
+
+We have a constraint of time complexity O(logn) and a description says "Given an array of integers nums sorted in non-decreasing order", so we can feel this question is solved by binary search.
+
+But a challenging point of this question is that we might have multiple targets in the input array, becuase we have to find the starting and ending position of a given target value.
+
+The start position and end position can be rephrased as the leftmost index and the rightmost index.
+
+So, for the most part, we use typical binary search, but when we find a target, we need to do these.
+
+Every time we find one of targets, keep current index and execute one of these
+
+If we try to find left most index, move right pointer to middle pointer - 1.
+If we try to find right most index, move left pointer to middle pointer + 1.
+
+Because we need to find a target again between left and middle pointer or right and middle pointer. If we don't get the new target in the new range, don't worry. The current index you have right now is the most left index or right index.
+
+How we can find the most left index and right index at the same time?
+I think it's hard to find the most left index and right index at the same time, so simply we execute binary search algorithm twice for the most left index and right index, so that we can focus on one of them.
+
+Let's see a real algorithm!
+
+Algorithm Overview:
+---------------------
+Define a class Solution.
+Implement a method searchRange that takes a sorted list of integers nums and an integer target. This method finds the range of the target value in the input list.
+
+Detailed Explanation:
+-----------------------
+1) Define a class named Solution.
+
+2) Implement a method searchRange within the Solution class that takes three parameters: nums (a sorted list of integers), target (an integer to search for), and is_searching_left (a boolean indicating whether to search for the leftmost or rightmost occurrence of the target).
+
+	a) Define a helper method binary_search that takes nums, target, and is_searching_left as arguments. This method performs binary search to find the target value and returns the index of either the leftmost or rightmost occurrence of the target value based on the is_searching_left parameter.
+
+	b) Initialize left to 0, right to the length of nums minus 1, and idx to -1.
+
+	c) Perform a binary search within the nums array using a while loop until left is less than or equal to right.
+
+	d) Calculate the midpoint as (left + right) / 2.
+
+	e) Compare the target value with the element at the midpoint of the array (nums[mid]):
+
+	If nums[mid] is greater than the target, update right to mid - 1.
+	If nums[mid] is less than the target, update left to mid + 1.
+	If nums[mid] is equal to the target, update idx to mid and adjust left or right accordingly based on is_searching_left.
+	
+	f) Return the index idx.
+
+Call binary_search twice within the searchRange method: once to find the leftmost occurrence of the target (left = binary_search(nums, target, True)) and once to find the rightmost occurrence of the target (right = binary_search(nums, target, False)).
+
+Return a list containing the leftmost and rightmost indices of the target: [left, right].
+
+This algorithm uses binary search to efficiently find the leftmost and rightmost occurrences of the target in the sorted array.
