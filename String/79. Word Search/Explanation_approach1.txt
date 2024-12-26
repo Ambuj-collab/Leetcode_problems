@@ -1,0 +1,63 @@
+Problem Description
+The problem gives us a 2D grid of characters called board and a string word. Our task is to determine if word exists in the grid. A word is said to exist in the grid if it can be formed by tracing a path through adjacent cells. Cells are considered adjacent if they are directly above, below, to the left, or to the right of one another (diagonal adjacency is not allowed). As we trace the path to form the word, we cannot use the same cell more than once. The goal is to return true if the word can be constructed from the grid following these rules, otherwise, we return false.
+
+
+Intuition:
+------------
+To solve this problem, we employ a technique known as Depth-First Search (DFS). The intuition behind using DFS is that it allows us to explore all potential paths from a starting cell to see if we can spell out the word.
+
+Here's the thinking process for arriving at the DFS solution approach:
+
+1) Start at Every Cell: We need to consider every cell in the grid as a potential starting point of our word.
+
+2) Explore Adjacent Cells: Once we've picked a starting cell, we look at its adjacent cells. If the current cell contains the correct letter (the next letter in word that we're looking for), we can move onto this adjacent cell.
+
+3) Track Where We've Been: In order not to use the same cell twice, we temporarily modify the current cell in the grid to mark it as 'visited'. This way, we avoid re-visiting cells on the current path. It's important to remember to reset this cell back to its original state after we finish searching from that cell.
+
+4) Use Recursion for Simplicity: Implementing our DFS as a recursive function is convenient because it allows us to easily backtrack (undo our choice of the current letter and try a different path) if we realize we can't spell out the entire word from the current path.
+
+5) Termination Conditions: The DFS should terminate when we have successfully found the last letter of word, or when we have run out of valid paths to pursue. In the first case, we immediately return true, and in the second case, once all possibilities have been exhausted from a certain cell, we return false.
+
+Writing this logic into a recursive function dfs, we're able to perform a thorough search from each starting cell until we find a path that matches word.
+
+
+Example Walkthrough:
+----------------------
+Let's demonstrate how the Depth-First Search (DFS) solution method works using a simplified example.
+
+Imagine we have the following grid and word:
+
+board = [
+    ['A', 'B', 'C', 'E'],
+    ['S', 'F', 'C', 'S'],
+    ['A', 'D', 'E', 'E']
+]
+word = "SEE"
+
+We want to know whether we can find the word "SEE" in the grid by moving to adjacent cells without reusing any cell.
+
+1) Start at Every Cell: We initiate our DFS from board[0][0] with A. Since A is not S (the first letter of "SEE"), the search does not continue from here. Next, we try board[0][1] which is B, again not matching 'S'. We continue this process until we find S at board[1][0].
+
+2) Explore Adjacent Cells: From board[1][0] (which is S), we look at the adjacent cells (board[0][0], board[1][1], board[2][0] and board[1][0] as vowel cells are not considered).
+
+3) Track Where We've Been: We mark board[1][0] as visited by setting it to "0".
+
+4) Use Recursion for Simplicity: We start a recursive call from board[1][1] where we find F—not the correct letter, so the call returns False, and we continue the DFS.
+
+5) Termination Conditions: Continuing the search, board[2][0] is A (also not E), so we move on to board[2][1] (which is D), and finally to board[2][2] which is E - this matches the second letter of "SEE".
+
+6) The next recursive call starts from board[2][2], and we mark it visited. Its adjacent cells (excluding the one we just came from and marked ones) are checked. board[2][3] is E—the last letter we're looking for.
+
+7) The base case is met (we are at the last letter of the word), and since board[2][3] matches the last letter of "SEE", the recursive call returns True.
+
+8) We backtrack, unmarking the visited cells, and propagate the True value upwards through the recursion stack, ultimately return True from the initial call.
+
+9) Since we've found at least one path that spells "SEE", we can stop the search and return True. No need to check further cells.
+
+Here's a visual representation of the path that spells "SEE":
+[ ]
+[S]
+[E]
+[E]
+
+Using this approach, we verify that "SEE" exists within the board as per the rules given, and the function would return True.

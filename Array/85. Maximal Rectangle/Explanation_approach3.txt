@@ -1,0 +1,79 @@
+Problem Description:
+======================
+This problem involves a binary matrix, which is a grid (rows x cols) containing only 0s and 1s. The objective is to find the largest rectangle, which is composed entirely of 1s, and return the area of that rectangle. To clarify, the area of a rectangle is calculated by multiplying its width by its height.
+
+
+Intuition:
+============
+The solution approach capitalizes on a pattern that can be observed by examining the matrix row by row. By treating each row as the base, we can convert the problem into a series of "largest rectangle in histogram" problems.
+
+Here's how it works:
+
+    We start with a heights array to keep track of the heights of the 'bars' of 1s above each column at each row. As we move from one row to another, we update the heights: if we see a 1, the height increases by 1; if a 0, the height resets to 0.
+
+    With the updated heights array for each row, we determine the area of the largest rectangle that could be formed in the histogram represented by the heights.
+
+    For the histogram, we need to identify the limits of expansion for each 'bar' to form the largest rectangle under it. We do this by keeping track of the indices of the previous smaller bar on the left and the next smaller bar on the right for each bar. We use stacks to manage this efficiently as we scan the heights from left to right and then right to left.
+
+    Finally, for each height, now knowing how far it can expand to the left and right without encountering a shorter bar, we can calculate the largest rectangle that includes that bar as the highest bar in the rectangle. The maximum such area encountered is kept as the answer.
+
+By performing these steps, we gradually build up and keep track of potential rectangle areas through each row, and by the end, we will have found the largest rectangle possible in the entire matrix.
+
+
+Solution Approach:
+====================
+The solution to the problem involves two main functions: maximalRectangle and largestRectangleArea.
+
+	maximalRectangle Function:
+	-----------------------------
+	The maximalRectangle function employs dynamic programming by scanning through each row of the matrix and updating the heights array where the value at each index represents the height of the rectangle ending at that index. Specifically:
+
+		1) It initializes an array heights with a length equal to the number of columns in the matrix. This array stores the height of the 'bars' which contribute to forming the potential rectangles.
+		2) It iterates through each row in the matrix and for each element:
+			i) It checks if the element is a 1. If so, it increments the corresponding height in heights by 1 (because we have an additional 'bar' of height 1).
+			ii) If the element is a 0, it resets the corresponding height in heights to 0 (as there's no 'bar' at this column for the current row base).
+		3) After updating the heights for a row, it calls the largestRectangleArea to compute the largest rectangle that can be formed in the histogram described by heights.
+		4) It keeps track of the maximum area encountered after processing each row.
+
+	largestRectangleArea Function:
+	---------------------------------
+	The largestRectangleArea function calculates the largest rectangle area in a histogram given by heights:
+
+		1) It initializes two arrays, left and right, with lengths equal to the number of elements (n) in heights. These arrays store the indices of the next smaller element to the left and right, respectively, for each bar. By default, the left array is filled with -1 and the right array is filled with n.
+		2) It then uses two passes (left to right and right to left) with a stack stk to figure out for each bar the bounds within which the rectangle with that bar as the tallest can extend:
+			i) In the left to right pass, it keeps index positions in the stack where the bar heights are in non-decreasing order. When a bar at current index i is shorter than the one at the top of the stack, it means we found a right boundary for the bar at the stack's top. We can then update the right bound for that position and pop the stack. If the stack becomes empty, it means there's no smaller bar to the left.
+			ii) The process is similar in the right to left pass, which updates the left bounds.
+		3) At the end of these passes, for each bar, we know how far left and right it can extend to form the largest rectangle under it. Using this information, we calculate the maximum possible area for each bar, which is height[i] * (right[i] - left[i] - 1) (since we've found the bounds excluding the current bar).
+		4) The function finally returns the maximum area found, which the maximalRectangle function uses to determine the largest area in the matrix.
+
+By using the dynamic programming approach with histogram area calculations, this solution helps efficiently solve the problem by breaking it down into a series of subproblems (finding the largest rectangle in a histogram) that build on each other to give the overall answer.
+
+
+Example Walkthrough:
+======================
+Let's take a small binary matrix to walk through the solution approach:
+Suppose we have the following 3x4 binary matrix:
+	1 0 1 0
+	1 1 1 1
+	0 1 1 0
+
+We will apply the maximalRectangle function and break down the process:
+Step 1: Initialize the heights array with a length equal to the number of columns (4 in this case).
+Step 2: Process the first row [1 0 1 0]. The heights array is now [1 0 1 0].
+Step 3: Call largestRectangleArea:
+    i) The stack initially is empty.
+    ii) Iterating from the left, we keep track of 'left limits,' and at the end, the left array is [-1, -1, -1, -1].
+    iii) Iterating from the right, we keep track of 'right limits,' and the right array is [1, 4, 3, 4].
+    iv) Since the first and third bars are of the same height, the largest area is 1 * (1 - (-1) - 1) = 1 for each.
+Step 4: Process the second row [1 1 1 1]. The heights array is updated to [2 1 2 1].
+Step 5: Call largestRectangleArea again:
+    i) The stack will keep track of bars and will find that the 'left limits' are [-1, -1, -1, -1] and 'right limits' are [4, 4, 4, 4].
+    ii) The largest rectangle includes all four bars with smallest height 1, so the area is 1 * (4 - (-1) - 1) = 4.
+Step 6: Process the third row [0 1 1 0]. The heights array is now [0 2 3 0].
+Step 7: Call largestRectangleArea:
+    i) The 'left limits' are [-1, -1, 1, -1] and the 'right limits' are [4, 2, 4, 4].
+    ii) The largest rectangle can be formed by the third bar of height 3, with the area being 3 * (4 - (1) - 1) = 6.
+
+In the end, the largest rectangle area found in the matrix is 6, and that is the output of our maximalRectangle function.
+
+By performing each of these steps, we iteratively found the largest rectangle after each row and ended up with the largest rectangle in the entire matrix.

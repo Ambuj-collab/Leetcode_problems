@@ -1,0 +1,77 @@
+class Solution {
+    public void solveSudoku(char[][] board) {
+        // Start solving sudoku from the first cell
+        solve(board, 0, 0);
+    }
+
+    private boolean solve(char[][] board, int row, int col) {
+        // Base case: If row is equal to board length, entire board has been filled
+        if (row == board.length) {
+            return true;
+        }
+        
+        // Move to next row when current row is fully filled
+        if (col == board[0].length) {
+            return solve(board, row + 1, 0);
+        }
+        
+        // Skip cells that are already filled
+        if (board[row][col] != '.') {
+            return solve(board, row, col + 1);
+        }
+        
+        // Try different numbers in current cell
+        for (char num = '1'; num <= '9'; num++) {
+            if (isValidPlacement(board, row, col, num)) {
+                board[row][col] = num; // Fill current cell with valid number
+                
+                // Move to next cell
+                if (solve(board, row, col + 1)) {
+                    return true;
+                }
+                
+                // Backtrack to previous state if solution not found
+                board[row][col] = '.';
+            }
+        }
+        
+        // No valid solution found
+        return false;
+    }
+
+    private boolean isValidPlacement(char[][] board, int row, int col, char num) {
+        // Check if num is already in the same row, column or 3x3 subgrid
+        for (int i = 0; i < board.length; i++) {
+            // Check row
+            if (board[i][col] == num) {
+                return false;
+            }
+
+            // Check column
+            if (board[row][i] == num) {
+                return false;
+            }
+ 
+            // Check 3x3 subgrid
+            int subgridRow = 3 * (row / 3) + i / 3; // Calculate row index of subgrid
+            int subgridCol = 3 * (col / 3) + i % 3; // Calculate column index of subgrid
+ 
+            if (board[subgridRow][subgridCol] == num) {
+                return false;
+            }
+        }
+
+        // Placement is valid
+        return true;
+    }
+}
+
+/*
+
+Time and Space Complexity:
+----------------------------
+Overall Time Complexity:  In general, we can express the worst-case time complexity as: O(9^n) where 𝑛 n is the number of empty cells.
+
+Overall Space Complexity: The space complexity is: O(n) where n is the number of empty cells (due to the recursion stack).
+	a) Recursive Stack Space: The space complexity is mainly due to the recursion stack. The maximum depth of recursion can go up to the number of empty cells, which in the worst case is 81 (if all cells are empty).
+	b) In-Place Modifications: The algorithm modifies the board in place, so no additional space is used for storing the board.

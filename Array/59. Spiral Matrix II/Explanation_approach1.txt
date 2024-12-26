@@ -1,0 +1,64 @@
+Problem Description:
+-----------------------
+The task is to create a square matrix (2-dimensional array) of a given size n where n is a positive integer. The matrix should be filled with numbers from 1 to n^2 (1 to n squared) following a spiral pattern. A spiral pattern means we start from the top-left corner (0,0) and fill the matrix to the right, then downwards, then to the left, and finally upwards, before moving inwards in a spiral manner and repeating the directions until the entire matrix is filled.
+
+
+Intuition:
+-------------
+The intuition behind the solution is to replicate the spiral movement by using direction vectors to move the filling process right, down, left, and up. We use a variable to track the value to be filled in the next cell, which begins at 1 and ends at n^2. To navigate the matrix:
+
+1) We maintain a direction 2D array 'directions' which contains tuples representing the direction of movement: right (0, 1), down (1, 0), left (0, -1), and up (-1, 0).
+2) We initialize our position at the start of the matrix (0,0)
+3) We iterate through the values from 1 to n^2, filling the cells of the matrix.
+4) After inserting a value, we check if the next step will go out of bounds or into a cell that already has a value. If so, we change direction by rotating to the next direction vector.
+5) This process is continued until all cells are filled accordingly maintaining the spiral order.
+
+The solution uses modulo division to cycle through the 'directions', ensuring when we reach the end of the 'directions' array, it loops back to the beginning. This helps us maintain the spiral path without creating complex conditional statements.
+
+
+Solution Approach:
+---------------------
+The solution applies a simulation approach, where we simulate the spiral movement within the matrix. Let's dissect the solution approach.
+
+1) We start by creating an n x n matrix filled with 0s to hold the values. This is achieved by the 2D matrix.
+2) We define a 'directions' array which contains four tuples. Each tuple represents the direction change for each step in our spiral: right is (0, 1), down is (1, 0), left is (0, -1), and up is (-1, 0).
+3) We initialize three variables i, j, and k which represent the current row, current column, and current direction index, respectively.
+4) A for loop is used to iterate through the range from 1 to n^2, inclusive. During each iteration, we perform the following steps:
+	a) Place the current value v in the ans matrix at position (i, j).
+	b) Calculate the next position (x, y) by adding the current direction directions[k] to the current position (i, j).
+	c) Check if the next position is out of bounds or if the cell has already been visited (non-zero value). If either is true, we change the direction by updating the value of k with (k + 1) % 4, which rotates to the next direction in 'directions'.
+	d) Update the current position (i, j) to the new position (x, y) based on the direction we are moving.
+5) The loop stops when all values from 1 to n^2 have been placed into the ans matrix.
+
+By following this approach, we can generate the matrix with numbers from 1 to n^2 in spiral order dynamically for any size of n.
+
+The use of a direction vector is a common technique in grid traversal problems. It simplifies the process of moving in the four cardinal directions without writing multiple if-else conditions. The modulo operator % assists in cycling through our direction vectors to maintain the correct spiral movement.
+
+
+Example Walkthrough:
+-----------------------
+Let's assume n = 3 to illustrate the solution approach. Our goal is to fill a 3x3 matrix with numbers from 1 to 3^2 (which is 9), in a spiral pattern.
+
+1) We create an empty 3x3 matrix filled with 0's.
+	ans = [
+	  [0, 0, 0],
+	  [0, 0, 0],
+	  [0, 0, 0]
+	]
+2) The 'directions' array contains direction vectors: [(0, 1), (1, 0), (0, -1), (-1, 0)]. This represents right, down, left, and up movement respectively.
+3) We set i, j, and k to 0. Here, (i, j) is the current position (initially at the top-left corner), and k is the index for direction vectors (starting with right movement).
+4) We will fill the matrix with values from 1 to 9. For each value v, we do the following:
+	a) Place v at ans[i][j]. For the first iteration, we place 1 at ans[0][0].
+	b) Update the next position (x, y) by adding the direction vector to the current position (i, j).
+	c) If (x, y) is out of bounds or ans[x][y] is not 0, we update k to (k + 1) % 4 to change direction.
+	d) Move to (x, y) and repeat the process.
+5) We continue this process until all values are filled into the matrix. After the completion, the ans matrix looks like:
+	ans = [
+	  [1, 2, 3],
+	  [8, 9, 4],
+	  [7, 6, 5]
+	]
+
+The steps are as follows: Start with the top-left corner (0,0), move right and fill 1, 2, 3, then move down to fill 4, move left for 5, move up for 6, again move right for 7, then go to the center and fill 8, and finally move right to fill 9.
+
+This makes the ans matrix to have its elements in a spiral order, from 1 to 9. By doing so for any n, we can generate the desired spiral matrix.

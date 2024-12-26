@@ -1,0 +1,85 @@
+Problem Description:
+----------------------
+You are tasked with creating an m x n matrix that represents the elements of a given linked list in a spiral format. A linked list is a linear collection of elements, where each element points to the next one. The number of rows (m) and columns (n) are provided, and these will be the dimensions of the matrix you need to fill.
+
+The filling should start from the top-left corner of the matrix and proceed in a clockwise spiral pattern. In a spiral pattern, you move right until you hit the edge or an already filled cell, then move down, move left, and move up, repeating this process until all elements from the linked list are placed within the matrix. If the matrix is larger than what is needed for the linked list, the remaining cells should be filled with -1.
+
+The objective is to return the completed matrix.
+
+
+Intuition:
+------------
+The solution to this problem comes down to simulating the process of filling the matrix in a spiral. One way to achieve this is to keep track of the direction we are moving in and change it whenever we hit the edge of the matrix or an already filled cell (indicated by -1).
+
+We start from the top-left corner, initially moving to the right. This is followed by moving downwards once we can't move right anymore, then to the left, and finally, moving upwards — cycling through these directions (right, down, left, up) as needed.
+
+To implement this efficiently:
+
+1) We initialize a matrix full of -1 to ensure we know when a cell is filled already and to handle the case when the linked list ends before filling the entire matrix.
+2) We create a direction tracking 2D array 'directions' composed of pairs, where each pair represents a change on the i and j indexes of the matrix (row and column movements).
+3) A pointer 'directionIndex' within the dirs is utilized to change the direction correctly when necessary.
+4) We iterate over the linked list and the matrix simultaneously, moving the current index based on the direction from 'directions' and checking boundaries to know when to change direction.
+
+This approach allows us to fill in the matrix in spiral order by updating the indexes to represent the movement on each iteration, only altering direction when we hit a boundary or previously filled cell. The process stops when we reach the end of the linked list.
+
+
+Solution Approach:
+--------------------
+The provided solution in Java is quite straightforward and efficiently implements the spiral matrix population from a linked list. Here's a step-by-step explanation of the approach using algorithms and patterns:
+
+1) Matrix Initialization: We initiate an m x n matrix 'resultMatrix' filled with -1 to signify unfilled cells, which later helps to check whether we can continue in our current direction or need to turn.
+
+2) Direction Control: A 'directions' 2D array contains the directional changes as pairs of row and column increments for moving right, down, left, and up, respectively [[0, 1], [1, 0], [0, -1], [-1, 0]]. This is equivalent to following an (x, y) axis movement where (0, 1) moves right, (1, 0) moves down, (0, -1) moves left, and (-1, 0) moves up.
+
+3) Traversal Control: i and j denote the current row and column indices in the matrix, and p keeps track of the current direction using the index of the 'directions' 2D array.
+
+4) List Iteration and Matrix Population: Starting from the top-left corner, we iterate over the linked list and populate the matrix elements with the current list node's value. After embedding the value from the current list node into the matrix, we move the head reference forward to the next node.
+
+5) Boundary and Direction Check: After placing each value in the matrix, we check if the next move would go out of bounds or into an already filled cell by tentatively applying the current direction to i and j. If the tentative move is invalid, we rotate the direction by moving to the next element in the 'directions' 2D array, accomplished by the p = (p + 1) % 4.
+
+6) Ending Condition: The loop continues until the head is NULL, meaning we've reached the end of the linked list.
+
+7) Final Result: The algorithm returns the populated 'resultMatrix' matrix once the entire linked list is traversed or once all cells are filled, whichever comes first.
+
+The code uses common data structures like 2D array and simple control flow constructs such as while-loops and if-else statements, giving us an elegant solution to build a matrix in spiral order from a predefined linked list.
+
+
+Example Walkthrough:
+-----------------------
+Let's walk through a small example:
+
+Suppose we're given the dimensions of the matrix m x n as 3 x 3 and a linked list with the elements 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9.
+
+1) Matrix Initialization: We first initialize a 3 x 3 matrix filled with -1.
+	ans = [
+	  [-1, -1, -1],
+	  [-1, -1, -1],
+	  [-1, -1, -1]
+	]
+2) Direction Control Initialization: We set up our direction array 'directions' to [0, 1], [1, 0], [0, -1], [-1, 0], which represents right, down, left, and up movements, respectively. We also set our current direction index p to 0.
+3) Assign Variables for Traversal: We initialize our current position indices as i = 0, j = 0 for the top-left start.
+4) Traverse and Populate Matrix: Starting with the head of the linked list, we start populating the matrix.
+	a) Place 1 at ans[0][0] and move right to ans[0][1].
+	b) Place 2, 3 turning when needed until we've reached ans[1][2] with 6.
+		ans = [
+		  [ 1, 2, 3],
+		  [-1, -1, 4],
+		  [-1, -1, 5]
+		]
+5) Boundary and Direction Check: The next move is down, but since we're at the end of a column, we turn left.
+	a) We pop: 7 at ans[2][2], 8 at ans[2][1], and 9 at ans[2][0].
+	b) Next, we attempt to move up from ans[2][0], but the above cell is also -1; we've finished the matrix spiral.
+	ans = [
+	  [ 1,  2,  3],
+	  [-1, -1, 4],
+	  [ 9,  8, 7]
+	]
+6) Finishing Touches: We've reached the end of the linked list; therefore, we fill any remaining -1 with -1, which are already in place.
+7) Final Result: We have successfully filled the 3 x 3 matrix in a spiral with the linked list values. The final matrix is:
+	ans = [
+	  [ 1,  2,  3],
+	  [ 8,  9,  4],
+	  [ 7,  6,  5]
+	]
+
+This matrix is our output. We iterated through the linked list, populating the matrix in a spiral pattern, adhering to our directional rules and boundary checks, and terminating when we processed all list nodes.

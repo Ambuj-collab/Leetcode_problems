@@ -1,0 +1,97 @@
+Problem Description:
+----------------------
+The task is to find the minimum number of operations required to convert one string (word1) into another (word2). The only operations allowed are:
+
+1) Inserting a character.
+2) Deleting a character.
+3) Replacing one character with another.
+
+These operations can be applied in any order and any number of times, and the goal is to achieve this transformation with the least number of them.
+
+
+Intuition:
+------------
+To solve this problem, we use a technique in computer science known as dynamic programming. The core idea is to break down the big problem into smaller subproblems and solve each of them just once, storing their solutions - often in a table - so that the next time the same subproblem occurs, instead of recomputing its solution, one simply looks it up in the table. This is particularly effective for problems where the same subproblems recur many times.
+
+For our specific case, we construct a matrix f where each cell f[i][j] represents the minimum number of operations to convert the first i characters of word1 into the first j characters of word2. The first row (f[0][j]) is initialized with the sequence 0, 1, 2, ..., n because if word1 is empty, the only option is to insert characters into it, and the number of operations equals the number of characters in word2. Similarly, the first column (f[i][0]) is 0, 1, 2, ..., m because if word2 is empty, the only option is to delete characters from word1.
+
+The intuition for the recursive step is as follows:
+
+1) If the current characters in word1 and word2 are equal (word1[i - 1] == word2[j - 1]), no operation is needed, and the number of operations will be the same as it was for i - 1 and j - 1.
+2) If they are not equal, we need to consider three possible operations:
+	a) Inserting (f[i][j - 1] + 1): We have matched up to j - 1 of word2, and then by adding the j-th character of word2, we will match j characters. The number of operations is one more than it took to match j - 1 characters.
+	b) Deleting (f[i - 1][j] + 1): If we remove the i-th character from word1, we fall back to the subproblem of matching i - 1 characters of word1 with j characters of word2, and again, this is one more operation than that subproblem.
+	c) Replacing (f[i - 1][j - 1] + 1): Here, we change the i-th character of word1 to match the j-th character of word2. So, the number of operations is one more than the operations needed for i - 1 and j - 1.
+
+We take the minimum of these three options at each step, and the last cell f[m][n] will give us the minimum number of operations required to transform word1 into word2.
+
+
+Solution Approach:
+--------------------
+The approach to this problem is a classic example of Dynamic Programming (DP), which uses a 2D table to store solutions to subproblems. This memory storage is critical because many subproblems are solved multiple times, and storing their solutions significantly reduces computation time. This technique is known as memoization.
+
+To implement this:
+
+1) We initialize a 2D array f with m+1 rows and n+1 columns, where m is the length of word1 and n is the length of word2. Each element f[i][j] represents the minimum number of operations needed to convert the first i characters of word1 to the first j characters of word2.
+
+2) We fill in the base cases:
+	a) The first row represents converting an empty word1 into the first j characters of word2, which obviously requires j insertions. So, we set f[0][j] = j, for all j.
+	b) The first column represents converting the first i characters of word1 into an empty word2, which requires i deletions. Hence, f[i][0] = i, for all i.
+
+3) We iterate over the array starting from f[1][1] to fill in the remaining cells. At each cell f[i][j], we decide the best option (minimum operations) based on whether the characters at positions i-1 in word1 and j-1 in word2 are the same.
+
+4) The choice at each step is between:
+	a) Keeping the character if it's the same (f[i-1][j-1]) or
+	b) Performing one operation (delete, insert, or replace) to make the strings match up to that point.
+
+5) We apply the following state transition equation:
+
+	f[i][j] = {
+		f[i-1][j-1]                                   if word1[i-1] == word2[j-1]
+		min(f[i-1][j], f[i][j-1], f[i-1][j-1]) + 1    otherwise
+	}
+	
+	a) f[i-1][j] + 1 represents deleting the i-th character from word1.
+	b) f[i][j-1] + 1 means inserting the j-th character into word1.
+	c) f[i-1][j-1] + 1 indicates replacing the i-th character of word1 with the j-th character of word2.
+
+6) After filling the DP table, the value at f[m][n] gives us the minimum number of operations required to convert word1 to word2.
+
+This algorithm's runtime complexity is O(m * n) because we have to fill a table with m * n cells, and the work for each cell is constant. The space complexity is also O(m * n) for the DP table.
+
+
+Example Walkthrough:
+----------------------
+Let's consider a small example where we want to convert word1 = "intention" to word2 = "execution". We will walk through the Dynamic Programming approach to illustrate the solution:
+
+1) Initialize a 2D array f with 10 rows (since word1 has 9 characters plus 1 for the empty prefix) and 10 columns (since word2 has 9 characters plus 1 for the empty prefix).
+
+2) Fill in the base cases:
+	a) The first row f[0][j] from f[0][0] to f[0][9] will be 0, 1, 2, ..., 9 as it takes j insertions to convert an empty word1 into word2[0..j-1].
+	b) The first column f[i][0] from f[0][0] to f[9][0] will be 0, 1, 2, ..., 9 as it takes i deletions to convert word1[0..i-1] into an empty word2.
+
+3) Now, we iterate over the remaining cells starting from f[1][1]. We compare characters of word1 and word2 starting from first (i-1 for word1 and j-1 for word2) and fill f[i][j] considering three cases:
+
+	a) If word1[i-1] == word2[j-1], we copy the value from f[i-1][j-1] to f[i][j] (since no operation is needed).
+	b) Otherwise, we find the minimum of:
+		f[i-1][j] + 1 (delete case),
+		f[i][j-1] + 1 (insert case),
+		f[i-1][j-1] + 1 (replace case).
+
+For the first non-base cell f[1][1], since word1[0] is 'i' and word2[0] is 'e', they're not the same, so we compute:
+
+f[1][1] = min(f[0][1], f[1][0], f[0][0]) + 1
+        = min(1, 1, 0) + 1
+        = 1
+		
+4) We continue this process for each cell. For instance:
+
+f[3][2] (to convert "int" to "ex"):
+- word1[2] is "t" and word2[1] is "x", so they are different.
+- f[3][2] = min(f[2][2], f[3][1], f[2][1]) + 1
+          = min(2, 3, 2) + 1 
+          = 3
+
+5) After we have populated the entire array, we look at the last cell f[9][9] to find the minimum number of operations required to convert word1 into word2. In this example, let's say the last cell value is 5 (as your specific DP table may vary during actual execution).
+
+Thus, the answer is that it requires a minimum of 5 operations to transform "intention" into "execution" using the allowed operations.

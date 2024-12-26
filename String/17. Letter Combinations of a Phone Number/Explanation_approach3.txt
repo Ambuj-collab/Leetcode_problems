@@ -1,0 +1,44 @@
+Problem Description:
+---------------------
+The problem presents a scenario where we're given a string that contains digits from 2-9. The task is to generate all possible letter combinations that the number could represent, similar to the way multi-press text entry worked on old phone keypads. Each number corresponds to a set of letters. For instance, '2' maps to "abc", '3' maps to "def", and so on, just as they do on telephone buttons. We should note that the digit '1' does not map to any letters. The goal here is to return all the possible letter combinations in any order.
+
+The problem is best solved using a Backtracking approach. This is because it requires exploring all possible combinations prompted by the mapping of digits to letters on a phone keypad, which is inherent to backtracking tasks. With backtracking, we can systematically generate and explore the combinations of letters, ensuring all possible letter combinations from the provided phone number are considered.
+
+
+Intuition:
+------------
+The intuition behind the solution is that we can solve the problem using a form of backtracking—generating all the possible combinations by traversing over the input digits and mapping them to the corresponding letters. We start with an initial list containing just an empty string, which represents the starting point of our combination. For each digit in the input string, we look up the corresponding string of characters it can represent and then generate new combinations by appending each of these letters to each of the combinations we have so far.
+
+The solution uses a breadth-first(BFS) search-like approach (without using a queue). Initially, since we only have one combination (an empty string), for the first digit, we will generate as many new combinations as there are letters corresponding to that digit. For each subsequent digit, we take all the combinations generated so far and expand each by the number of letters corresponding to the current digit. This process is repeated until we have processed all digits in the input. The beauty of this approach is that it incrementally builds up the combination list with valid letter combinations corresponding to the digits processed so far, and it ensures that all combinations of letters for the digits are covered by the end.
+
+
+Example Walkthrough:
+----------------------
+Let's take "23" as an example to illustrate the solution approach.
+
+1) We initialize a list d representing the characters for each digit from '2' to '9'. Thus, d[0] = 'abc' for '2' and d[1] = 'def' for '3'.
+
+2) We start with a list ans containing one element, an empty string: ans = [""].
+
+3) Loop through each digit in "23":
+
+	a) For the first digit '2':
+
+		i) Convert '2' to an integer and subtract 2 to find the corresponding index in list d which is 0.
+		ii) Retrieve the string s which is 'abc'.
+		iii) Generate new combinations by appending each letter in 'abc' to the empty string in ans. So ans becomes ["a", "b", "c"].
+	b) For the second digit '3':
+
+		i) Convert '3' to an integer and subtract 2 to find the corresponding index in list d which is 1.
+		ii) Retrieve the string s which is 'def'.
+		iii) Generate new combinations by concatenating each element in ans ("a", "b", "c") with each letter in 'def'. Using list comprehension, the new ans becomes:
+			[
+			  "a" + "d", "a" + "e", "a" + "f",
+			  "b" + "d", "b" + "e", "b" + "f",
+			  "c" + "d", "c" + "e", "c" + "f"
+			]
+		iv) So now ans is ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
+
+4) After processing both digits, ans contains all possible letter combinations for "23". Hence, the final output is ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"].
+
+This example demonstrates the backtracking nature of the solution where each step builds upon the previous steps' results, expanding them with all possible letter combinations for the next digit.

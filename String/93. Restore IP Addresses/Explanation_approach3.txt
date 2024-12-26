@@ -1,0 +1,55 @@
+Problem Description:
+----------------------
+The task is to generate all possible valid IP addresses from a given string containing only digits. A valid IP address has four integer sections separated by dots, and each integer must lie within the range of 0 to 255. Importantly, the integers must not have leading zeros, except for the digit "0" itself. To solve this problem, it is necessary to insert dots in the correct positions within the given string without changing the order of digits to create valid IP addresses. Each section of the IP address is essentially a substring of the original string. The challenge is to determine the partitions that yield a valid sequence of four integers, respecting the constraints stated above.
+
+Intuition:
+------------
+To arrive at the solution, we adopt a depth-first search (DFS) strategy, exploring each potential segment step by step and backtracking if a segment turns out to be invalid. The DFS algorithm tries to place the dots in all allowable positions, and upon placing each dot, it checks if the resulting segment is a valid integer between 0 and 255. It is important to note that a leading zero is permissible if and only if the segment is a single zero.
+
+The steps of the algorithm are as follows:
+
+1) Proceed with the DFS traversal from the first digit of the string.
+2) In each function call, iterate over the possible lengths for the next segment, which could be 1, 2, or 3 digits long.
+3) At each iteration, check if the segment is a valid integer within the IP address criteria (0 to 255 and no leading zeros, unless the integer is 0).
+4) If the segment is valid, add it to a temporary list and recursively call the function with the updated index.
+5) If we reach a point where all four segments are valid and we have used all digits of the string, we add the combination to the result list.
+6) If at any point the segment is invalid or we've got 4 segments but the string is not fully used, we backtrack and try another segment length or configuration.
+
+By exploring each possible dot placement and segment length, and ensuring that each constitutes a valid part of the IP address, we can guarantee that all valid IP addresses formed from the input string are found.
+
+
+Example Walkthrough:
+----------------------
+Let's consider a simple example to illustrate how the solution works with the given string "25525511135".
+
+1) Begin by calling the recursive DFS function from the first character: dfs(0).
+
+2) In the first level of recursion, start with an empty list t = []. Iterate over string lengths 1-3 starting from the first character s[0] as long as we remain within the string length (dot placement possibilities), here let's try all three:
+	a) Try taking "2" as the first segment: t = ["2"], call dfs(1).
+	b) Try taking "25" as the first segment: t = ["25"], call dfs(2).
+	c) Try taking "255" as the first segment: t = ["255"], call dfs(3).
+
+3) Following the depth-first search strategy, let's dig into the case where the first segment is "255": dfs(3).
+
+4) With t = ["255"], proceed with the next character s[3], trying segment lengths of 1-3.
+	a) Try taking "2" as the next segment: t = ["255", "2"], call dfs(4).
+	b) Try taking "25" as the next segment: t = ["255", "25"], is invalid as "25525" is not a possible IP address. Backtracking occurs, no recursive call is made.
+	c) Try taking "255" as the next segment: t = ["255", "255"], which is valid, so proceed with dfs(6).
+
+5) Now consider t = ["255", "255"]. At dfs(6), try out different lengths again.
+	a) Taking "1" as the next segment, t = ["255", "255", "1"], call dfs(7).
+	b) Taking "11" as the next segment, t = ["255", "255", "11"], call dfs(8).
+	c) Taking "111" as the next segment is not possible here since we would run out of characters for the last segment. No recursive call happens.
+
+6) Consider the state t = ["255", "255", "1"]. Now call dfs(7) and follow the same process.
+	a) Taking "3" as the next segment: t = ["255", "255", "1", "3"] and calling dfs(8).
+	b) Taking "35" as the next segment: t = ["255", "255", "1", "35"] is valid but doesn't use all characters, no recursive call is made.
+	c) Taking "135" as the final segment is not possible since the start index would be greater than string length. No recursive call is made.
+
+7) In dfs(8) with t = ["255", "255", "1", "3"], we are at the end of the string, so join t with dots to get "255.255.1.3" and add this to the answer list ans.
+
+8) Now backtrack to the state t = ["255", "255", "1"] and attempt the next possible recursion which would have been with the segment "35" or "135". Both these were ruled out in step 6.
+
+9) Continue backtracking to previous recursion levels and trying different segment lengths and combinations in this manner until all possibilities have been exhausted.
+
+By the end of the described example, we will have all valid IP addresses that can be formed from the given string stored in the ans list.

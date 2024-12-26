@@ -1,0 +1,71 @@
+Problem Description:
+----------------------
+In this problem, we are given two non-negative integer numbers represented as strings, num1 and num2, and our task is to calculate the product of these two numbers and return the result as a string. The constraint is that we are not allowed to use any built-in library that can handle big integers, nor can we simply convert the strings to integers and multiply them in the standard way. This challenges us to think about how we can perform multiplication manually, mimicking the way one might do it on paper.
+
+Intuition:
+-------------
+The intuition behind the solution is based on how we perform multiplication by hand between two numbers. More precisely, when we multiply, say, a three-digit number by a two-digit number, we do it digit by digit and keep track of the carries. This process results in a series of partial products, which are then added together to form the final product.
+
+To implement this in code, we need a data structure to store intermediate results. The approach is to use an array arr to store the digits of the partial products. The length of this array is the sum of the lengths of num1 and num2 because that's the maximum possible length of the result (e.g., 99 * 99 is 9801, four digits long, which is the sum of the lengths of the numbers being multiplied).
+
+Next, we iterate over each digit of num1 and num2 in nested loops, and for each pair of digits, we multiply them and add the result to the corresponding position in arr. The key formula for the index in arr where we should accumulate the product of digits at positions i and j is arr[i+j+1].
+
+After we have all the partial products, we then iterate through the arr array to handle carries at each position, adjusting each digit so that it represents a proper digit in a number (less than 10), and propagating the carry to the next position.
+
+Finally, we need to return the string representation of the number stored in the array, but we skip any leading zeroes, as they don't contribute to the magnitude of the number. We join the remaining digits together to form the resulting product string to be returned.
+
+
+Solution Approach:
+--------------------
+The solution follows these steps:
+
+1) Check for Zero: If either num1 or num2 is "0", the product is "0". We catch this case early to simplify further logic.
+
+2) Initialization: Determine the lengths m and n of num1 and num2, respectively. Initialize an array arr of length m + n to hold the digits of the product.
+
+3) Digit-by-Digit Multiplication:
+	a) Iterate through the digits of num1 and num2 in descending order using two nested loops, with indices i and j.
+	b) Convert current digits to integers and multiply them: a * b.
+	c) Add the multiplication result to an appropriate position in the array arr: arr[i + j + 1] += a * b.
+	d) The position i + j + 1 comes from the fact that when you multiply a digit at position i of num1 with a digit at position j of num2, the result will contribute to the digits at positions i + j and i + j + 1 of the product.
+
+4) Handling Carries:
+	a) Iterate backwards through arr, starting from the end, to process carries.
+	b) For each position, if the value is greater than 9, divide by 10 to find the carry and keep the remainder:
+		i) arr[i - 1] += arr[i] // 10: This propagates the carry to the next higher position.
+		ii) arr[i] %= 10: This ensures that the current position has only a single digit.
+
+5) Converting Array to String:
+	a) If the digit at the highest position (arr[0]) is zero, it's a leading zero and should be omitted. Determine the starting index for the conversion (i), which is 0 if there's no leading zero, and 1 otherwise.
+	b) Join the digits from the arr starting at the right index i to form a string without leading zeros: "".join(str(x) for x in arr[i:]).
+
+This implementation doesn't use any special algorithms or data structures—it uses simple arrays and elementary math operations to simulate digit-by-digit multiplication, carefully considering the placement of each partial product and the handling of carries, just like manual multiplication on paper.
+
+
+Example Walkthrough:
+------------------------
+To illustrate the solution approach, let's walk through a small example where num1 = "13" and num2 = "24".
+
+1) Check for Zero: Neither num1 nor num2 are "0", so we proceed.
+
+2) Initialization: The length m of num1 is 2, and the length n of num2 is also 2. We initialize an array arr of length m + n = 4 to [0, 0, 0, 0].
+
+3) Digit-by-Digit Multiplication:
+	a) We iterate over num1 and num2 in reverse order so we will have the indices i=1,0 for num1 and j=1,0 for num2.
+	b) For i=1 (num1[1] = "3") and j=1 (num2[1] = "4"), we multiply the digits and add the result to arr[i + j + 1], which is arr[3] = 0 + (3 * 4) = 12.
+	c) We store 2 in arr[3] and carry over 1 to arr[2], so arr becomes [0, 0, 1, 2].
+	d) We repeat this for all pairs of digits:
+		i) i=1, j=0: arr[2] += 3 (num1[1]) * 2 (num2[0]); arr becomes [0, 0, 7, 2].
+		ii) i=0, j=1: arr[1] += 1 (num1[0]) * 4 (num2[1]); arr becomes [0, 4, 7, 2].
+		iii) i=0, j=0: arr[1] += 1 (num1[0]) * 2 (num2[0]); arr becomes [0, 6, 7, 2].
+
+4) Handling Carries:
+	a) Starting from the end of arr, we process the carries:
+		i) At arr[2] (7): We add 7 // 10 to arr[1] and set arr[2] to 7 % 10. arr stays [0, 6, 7, 2] as 7 is less than 10.
+		ii) At arr[1] (6): We do the same. There's no carry since 6 is also less than 10.
+
+5) Converting Array to String:
+	a) arr is [0, 6, 7, 2], so we omit the leading zero.
+	b) The final product string is "672" as we join the digits from arr starting from index 1.
+
+The final result of multiplying "13" by "24" using our manual algorithm results in "672", which matches what we expect from standard multiplication.

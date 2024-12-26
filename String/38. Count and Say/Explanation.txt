@@ -1,0 +1,45 @@
+Problem Description:
+----------------------
+The "count-and-say" problem requires us to generate a sequence of digit strings where each term is derived from its predecessor by a process that mimics "counting and saying" the numbers of consecutive digits. Specifically, it follows these rules:
+
+1) countAndSay(1) is defined to be the string "1".
+2) For countAndSay(n) where n > 1, we consider the digit string of countAndSay(n-1), then "count and say" the digits to form a new string.
+
+To "count and say" the string, we go through the string from left to right, identify consecutive runs of the same digit, and for each run, we first say the quantity of digits, followed by the digit itself. This is then concatenated to give us the next number in the sequence.
+
+For example, if we have a digital string "3322251":
+
+1) There are two '3's, so we say "23".
+2) Then we have three '2's, so we say "32".
+3) Next is one '5', so we say "15".
+4) Lastly, there's one '1', so we say "11".
+
+Putting it all together, we "say" "23321511", which becomes our "count and say" string for the next number in the sequence.
+
+The challenge asks us to find the nth term of this sequence given a positive integer n.
+
+Intuition:
+------------
+The intuition for solving this problem lies in understanding the "count and say" mechanism—specifically, how each term in the sequence is derived from the previous one. Here's how we can approach the solution:
+
+1) Initialize the sequence with the base case—"1" for countAndSay(1).
+2) To generate each subsequent term, iterate over the current string while keeping track of the count of identical consecutive digits encountered.
+3) We move along the string and, for each unique digit (or when the next digit is different from the current), we append the count followed by the digit to the result for this iteration.
+4) The result of this iteration becomes the input for the next, allowing us to build up the sequence term by term.
+
+This intuition is reflected in the solution, which uses a loop to construct each term using the process described above, iterating n-1 times to reach the nth term.
+
+Example Walkthrough:
+----------------------
+Let's clarify the solution approach with a small example by finding countAndSay(4).
+
+1) According to the base case, countAndSay(1) is "1".
+2) To find countAndSay(2), we look at the previous term which is "1". We have one '1', so we say "11". Hence, countAndSay(2) is "11".
+3) Next, to compute countAndSay(3), we consider the previous term "11". We have two '1's, thus we say "21". So, countAndSay(3) is "21".
+4) To determine countAndSay(4), we use the term from the previous step, "21". We have one '2', and one '1', so we say "12" followed by "11". This gives us countAndSay(4) as "1211".
+
+Breaking down the "count and say" for "21" to get "1211":
+	a) We start with the first digit '2', which only appears once, so we say "12".
+	b) Next, we go to the digit '1', which also appears once, so we say "11".
+
+We concatenate "12" and "11" to form "1211", yielding the term countAndSay(4). If we were to continue this process for countAndSay(5), we would apply the same counting and saying method to the string "1211".

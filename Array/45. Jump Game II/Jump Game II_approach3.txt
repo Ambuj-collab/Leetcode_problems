@@ -1,0 +1,50 @@
+Problem Description:
+-----------------------
+In this problem, you're given an array of integers called nums where each element represents the maximum length of a forward jump you can make from that index. Your goal is to find out the minimum number of jumps required to reach the last element of the array, starting from the first element.
+
+Imagine standing on a series of stepping stones stretched across a river, where each stone represents an index in the array and the number on the stone is the maximum number of stones you can skip forward with your next step. You want to cross the river using as few steps as possible, and all the stones are placed so it's guaranteed you can reach the other side.
+
+The constraints are as follows:
+	a) You are always starting at the first index.
+	b) You can choose any number of steps to move forward as long as it doesn't exceed the number specified in the current index.
+	c) You must reach to or beyond the final index of the array.
+
+This is a path-finding problem where we're not only interested in reaching the end but also in minimizing the number of steps we take to get there.
+
+
+Intuition:
+------------
+The solution to this problem lies in a greedy strategy, which means taking the best immediate step without worrying about the global optimum at each move.
+
+First, understand that since you can always reach the last index, there's no need to worry about getting stuck -- it's only a matter of how quickly you can get there. Also, the farthest you can reach from the current step should always be considered for making a jump, as it gives more options for the next move.
+
+With this in mind, you keep track of two important positions:
+	a) The farthest you can reach (mx) from the current index or from a group of indexes you consider during a jump.
+	b) The last position you jumped to (last), which is your starting line for considering where to jump next.
+
+As you progress through the array, you keep updating mx to be the maximum of itself and the farthest you can reach from the current index (i + nums[i]). When you reach the last index, it means you've exhausted all possibilities for the current jump and must make another jump. This is when you set last to mx, because mx is the new maximum range of positions you can jump to from your current position, and increment the number of jumps you've made.
+
+By iterating through the array with this strategy, you can determine the minimum number of jumps needed to reach the end of the array.
+
+
+Solution Approach:
+---------------------
+The implementation of this solution uses the greedy algorithm approach to determine the minimum number of jumps. The greedy algorithm makes the locally optimal choice at each step with the hope of finding the global optimum, and in this problem, it aims to reach the farthest index possible with each jump, thereby minimizing the total number of jumps.
+
+The following steps and variables are used to implement this strategy:
+a) ans is a counter to keep track of the number of jumps made.
+b) mx is a variable that holds the maximum distance that can be reached at the current position.
+c) last is a variable that keeps track of the farthest index reached with the last jump.
+
+The algorithm works as follows:
+1) Initialize ans, mx, and last to 0. These will store the current number of jumps, the maximum reachable index, and the last jumped-to index, respectively.
+2) Iterate over the array nums except for the last element, because from the second to last element, you are always one jump away from the end:
+	a) Update mx to be the maximum of itself and the sum of the current index i and the current element's value nums[i]. This effectively sets mx to the farthest reachable index from the current index.
+	b) Check if the current index i is equal to last. If true, it means you've reached the maximum index from the previous jump, and you have to jump again.
+	c) When jumping again (the if condition is satisfied):
+		i) Increment ans because you've made a jump.
+		ii) Update last to mx, as now you will calculate the reachable distance from this new index.
+
+By working through the array with these rules, the ans variable reflects the minimum number of jumps needed when the loop ends. This greedy approach ensures that you make a jump only when necessary, which coincides with reaching the maximum distance from the previous jump.
+
+The final result is obtained by returning the value of ans after the loop has finished executing. Since the greedy algorithm here always takes the farthest reaching option, it guarantees that the number of jumps is minimized.

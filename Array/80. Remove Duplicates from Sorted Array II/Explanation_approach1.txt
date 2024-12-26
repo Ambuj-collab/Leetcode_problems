@@ -1,0 +1,60 @@
+Problem Description:
+-----------------------
+Imagine you have a list of numbers that are sorted in ascending order, but some numbers appear more than once. Your task is to modify this list so that each unique number appears no more than twice. However, the challenge is to do this without using any additional space and to modify the original list directly —> that means you can't create a new list to hold the result. You need to ensure the final list still remains sorted.
+
+For example, if your list is [1,1,1,2,2,3,3,3,3], your goal is to change it to something like [1,1,2,2,3,3,__,__,__] (with the underscores representing spaces you don't care about).
+
+Ultimately, you'll return the length of the modified list (in the example above, it would be 6 since there are six numbers in the list after duplicates beyond the second instance are removed).
+
+
+Intuition:
+------------
+The solution uses a two-pointer approach that exploits the fact that the input array is already sorted. The essence of the approach is to iterate over the array and make sure that we're copying over each unique element at most twice to the 'front' part of the array.
+
+We use a variable k as a pointer to keep track of the valid segment of the list – the portion that contains no more than two instances of any number. When we find a number that should be part of the valid segment, we copy it to the position indicated by k and increment k.
+
+As we go through the list, for each new element we check:
+	a) If k is less than 2, which means we're still filling up the first two slots, we can safely add the number without any checks.
+	b) If the current number is not the same as the element two places before it in our valid segment of the list, we know that we haven't yet seen it twice, so we copy it to the current k position.
+
+This way, once we've gone through the entire list, k points just past the last element of the desired valid segment. We don't care what's beyond it, and we return k as the new length of the non-duplicated (up to twice) list.
+
+
+Solution Approach:
+---------------------
+The solution provided employs a simple algorithm with no additional data structures, adhering to an in-place modification constraint which is necessary for this problem. We use the two-pointer technique, but with just one variable k as the slow-runner pointer, while the for x in nums loop acts as the fast-runner pointer.
+
+Here's a step-by-step explanation of the implementation:
+1) We initialize the pointer k to zero. This will keep track of the position in the array where we will place the next unique element that we want to keep, which should appear at most twice.
+2) We iterate over each number x in nums using a for loop.
+3) For each number, we have two conditions to check:
+	a) If k < 2: This means we are at the beginning of nums, and since we can have at least two of the same element, we don't need to check for duplicates yet.
+	b) If x != nums[k - 2]: This is checked when k is greater than or equal to 2. Since the array is sorted, if the current number x is different from the two places before the current k index, it means x is different from at least the last two numbers in our "valid segment", so we can safely include x in our result.
+4) If either condition is true, we assign the current number x to the kth position in the array, thereby ensuring it is part of the final array, and increment k.
+5) After the loop finishes, k is now the length of the array with no duplicates (allowing up to two instances of the same number). We return k as the result.
+
+The key to this algorithm is understanding that since the array is sorted, duplicates are always adjacent. By checking two steps back, we ensure that we only keep at most two instances of any element. Furthermore, using only the variable k to manage the valid part of the array ensures that we comply with the O(1) extra space constraint of the problem, as we're just rearranging the elements and not using any extra space.
+
+This is the heart of the solution—the algorithm relies solely on the sorted nature of the array and the clever use of a single index to keep track of our "valid segment".
+
+
+Example Walkthrough:
+----------------------
+Let's illustrate the solution approach with a small example. Suppose our input array is:
+	nums = [1, 1, 1, 2, 3, 3, 4]
+
+According to the problem description, we want to modify the array so that no number appears more than twice and we want to do this in place. Here's how we apply the two-pointer technique with the variable k:
+
+1) We initialize k to zero.
+2) Start iterating over each number in nums.
+	a) x = 1, k = 0 (k < 2 is True). Place 1 at nums[0], increment k to 1.
+	b) x = 1, k = 1 (k < 2 is True). Place 1 at nums[1], increment k to 2.
+	c) x = 1, k = 2 (k < 2 is False, but x != nums[k - 2] is False since nums[0] is 1). We skip this step.
+	d) x = 2, k = 2 (Since x is different from nums[k - 2] => 2 != nums[0]). Place 2 at nums[2], increment k to 3.
+	e) x = 3, k = 3 (Since x is different from nums[k - 2] => 3 != nums[1]). Place 3 at nums[3], increment k to 4.
+	f) x = 3, k = 4 (Since x is different from nums[k - 2] => 3 != nums[2]). Place 3 at nums[4], increment k to 5.
+	g) x = 4, k = 5 (Since x is different from nums[k - 2] => 4 != nums[3]). Place 4 at nums[5], increment k to 6.
+3) By the end of the iteration, our array looks like this:
+	nums = [1, 1, 2, 3, 3, 4, __]
+
+Here, __ represents the space we don't care about. The array nums now contains each unique number no more than twice, in sorted order, and k (which is 6) indicates the length of the modified array that we are concerned with. Therefore, we return k as the answer which is 6 in this case.

@@ -1,0 +1,52 @@
+Problem Description:
+----------------------
+This problem asks you to implement a function that determines if the given input string s matches the given pattern p. The pattern p can include two special characters:
+
+	1) A period/dot (.) which matches any single character.
+	2) An asterisk (*) which matches zero or more of the element right before it.
+
+The goal is to check if the pattern p matches the entire string s, not just a part of it. That means we need to see if we can navigate through the entire string s using the rules defined by the pattern.
+
+Intuition:
+------------
+The intuition behind the provided solution is using dynamic programming to iteratively build up a solution. We create a 2D table f where f[i][j] will represent whether the first i characters of s match the first j characters of p.
+
+The approach is as follows:
+
+1) Initialize the table with False, and set f[0][0] to True because an empty string always matches an empty pattern.
+
+2) Iterate over each character in the string s and the pattern p, and update the table based on the following rules:
+
+	a) If the current character in p is *, we check two things: a. If the pattern without this star and its preceding element matches the current string s up to i, i.e., f[i][j] = f[i][j - 2]. b. If the element before the star can be matched to the current character in s (either it's the same character or it's a .), and if the pattern p up to the current point matches the string s up until the previous character, i.e., f[i - 1][j].
+
+	b) If the current character in p is . or it matches the current character in s, we just carry over the match state from the previous characters, i.e., f[i][j] = f[i - 1][j - 1].
+
+3) At the end, f[m][n] contains the result, which tells us if the whole string s matches the pattern p, where m and n are the lengths of s and p, respectively.
+
+The key here is to realize that the problem breaks down into smaller subproblems. If we know how smaller parts of the string and pattern match, we can use those results to solve for larger parts. This is a classic dynamic programming problem where optimal substructure (the problem can be broken down into subproblems) and overlapping subproblems (calculations for subproblems are reused) are the main components.
+
+Solution Approach:
+---------------------
+The solution involves dynamic programming – a method for solving complex problems by breaking them down into simpler subproblems. The key to this solution is a 2D table f with the dimensions (m + 1) x (n + 1), where m is the length of the string s and n is the length of the pattern p. This table helps in storing the results of subproblems so they can be reused when necessary.
+
+The algorithm proceeds as follows:
+
+1) Initialize the DP Table: Create a boolean DP table f where f[i][j] is True if the first i characters of s (sub-s) match the first j characters of p (sub-p), and False otherwise. We initialize the table with False and set f[0][0] to True to represent that empty s matches empty p.
+
+2) Handle Empty Patterns: Due to the nature of the * operator, a pattern like "a*" can match an empty sequence. We iterate over the pattern p and fill in f[0][j] (the case where s is empty). For example, if p[j-1] is *, then we check two characters back and if f[0][j-2] is True, then f[0][j] should also be True.
+
+3) Fill the Table: The main part of the algorithm is to iterate over each character in s and p and decide the state of f[i][j] based on the last character of the sub-pattern p[0...j]:
+
+	a. If the last character of sub-p is *, there are two subcases:
+
+		i) The star can be ignored (match 0 of the preceding element). This means if the pattern matches without the last two characters (* and its preceding element), the current state should be True (f[i][j] = f[i][j-2]).
+		
+		ii) The star contributes to the match (match 1 or more of the preceding element). This happens if the character preceding * is the same as the last character in sub-s or if it's a dot. If f[i - 1][j] is True, we can also set f[i][j] to True (f[i][j] |= f[i - 1][j]).
+	
+	b. If the last character of sub-p is not *, we check if it's a dot or a matching character:
+
+		If the characters match or if the character in p is . (which matches any character), the current state depends on the previous state without these two characters: f[i][j] = f[i - 1][j - 1].
+
+4) Return the Result: Once the table is filled, the answer to whether s matches p is stored in f[m][n], because it represents the state of the entire string s against the entire pattern p.
+
+In essence, the solution uses a bottom-up approach to fill the DP table, starting from an empty string/pattern and building up to the full length of s and p. The transition between the states is determined by the logic that considers the current and previous characters of p and their meaning based on regex rules.

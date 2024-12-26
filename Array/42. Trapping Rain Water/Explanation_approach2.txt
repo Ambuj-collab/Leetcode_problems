@@ -1,0 +1,67 @@
+Problem Description:
+----------------------
+Imagine you have a side-view silhouette of a series of blocks with various heights. These blocks represent the elevation map in the problem. When it rains, water will fill in the gaps between these blocks. The water can be trapped between the elevations where the adjacent blocks are higher. The width of each block is 1 unit. The task is to calculate the total amount of water that these blocks can hold without spilling over, after a rainfall.
+
+To tackle this, picture placing water on top of the blocks. Some water will be trapped between taller blocks, while some will flow off the sides if there are no sufficient barriers. The amount of trapped water at any point depends on the tallest blocks to its left and to its right because these will act as barriers. At any given point, the amount of water that can be held above it is the difference between the height of the shorter of the two barriers (either left or right) and the height of the block itself.
+
+
+Intuition:
+------------
+The solution to this problem is based on the observation that the amount of water above a bar is determined by the highest bar to the left and the highest bar to the right. No matter what the arrangements of other bars are, the water above a given bar can never exceed the height difference between the bar and the shortest of the two highest bars flanking it.
+
+To approach this problem efficiently, we use dynamic programming. We create two arrays, left and right, which represent the highest bars up to that point from the left and right, respectively. These arrays are populated by traversing the height array twice— once from left to right, updating the left array with the maximum height seen so far, and once from right to left, updating the right array similarly.
+
+Once we have these two arrays, the amount of water above each bar is simply the difference between it and the minimum of the highest bars to its left and right. The solution is then to accumulate this difference for each bar to get the total amount of trapped water.
+
+To put it more concretely, the left[i] array gets updated as we go, ensuring that at each step i, we have the height of the tallest bar up to that point. The right[i] array does the same but in the opposite direction. When calculating the trapped water at index i, we look at min(left[i], right[i]) which gives us the maximum water level possible at that point. Then, we subtract the height of the current bar height[i] to know how much water can actually be trapped there. Summing these values together for all indices gives us the total amount of trapped water.
+
+
+Solution Approach:
+--------------------
+The solution uses a combination of arrays and iteration to calculate the volume of trapped rainwater.
+
+Firstly, we define two arrays, left and right:
+
+    a) left[i] contains the height of the tallest pillar to the left of the position with index i, including the pillar at i itself.
+    b) right[i] contains the height of the tallest pillar to the right of the position with index i, also including the pillar at i.
+
+We initialize left[0] with the height of the first pillar height[0], since there's nothing to its left. Similarly, we initialize right[n-1] (where n is the number of pillars) with the height of the last pillar height[n-1].
+
+Next, two separate loops are used to populate these arrays:
+
+    a) For left[i], starting from i=1 and moving towards the end of the array, we calculate the maximum height encountered so far using max(left[i - 1], height[i]) and store it in left[i]. This ensures that left[i] contains the height of the tallest bar to the left including the current bar.
+
+    b) For right[i], we move in the opposite direction, starting from i=n-2 down to 0. We update right[i] with max(right[i + 1], height[i]). This accomplishes the same as the left array but for bars to the right.
+
+With these arrays filled, we can then iterate through each index i and calculate the trapped water above the bar at i. The amount of trapped water here is min(left[i], right[i]) - height[i] because it is bounded by the shortest of the two tallest pillars on either side.
+
+Finally, we sum up the calculated trapped water values for all i to find the total amount of trapped rainwater.
+
+Throughout this process, we use simple arrays and loops, a technique that falls under the category of dynamic programming, where we break down the problem into simpler subproblems and iteratively build up solutions to larger problems leveraging the solutions to smaller problems.
+
+
+Example Walkthrough:
+----------------------
+Let's take a small example to illustrate the solution approach: Suppose our height map for the blocks is given by height = [0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1].
+
+Now, follow the steps below:
+
+Firstly, we initialize our left and right arrays:
+
+    a) Initialize left array with the same length as height with left[0] = height[0], which is 0.
+    b) Initialize right array with the same length as height with right[-1] = height[-1], which is 1.
+
+Secondly, we populate the left and right arrays:
+
+    a) Start filling the left array from left[1] to left[-1]. For each left[i], we consider max(left[i - 1], height[i]). This updates left to [0, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 3].
+    b) Fill the right array in reverse (starting from the second to last element and moving to the first). For each right[i], we consider max(right[i + 1], height[i]). This updates right to [3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 1].
+
+With both arrays filled, we now calculate the trapped water above each index i in the height array:
+
+    For each position i, calculate the trapped water as min(left[i], right[i]) - height[i], which gives us the volume at each position as [0, 0, 1, 0, 1, 2, 1, 0, 0, 1, 0, 0].
+
+Lastly, sum the trapped water calculated for every position:
+
+    Calculate the sum which is 0 + 0 + 1 + 0 + 1 + 2 + 1 + 0 + 0 + 1 + 0 + 0, giving us a total of 6 units of water that the blocks can hold after rainfall.
+
+By following the described solution approach step by step, we easily solve the problem using dynamic programming concepts and determine that our example silhouette can trap a total of 6 units of water.

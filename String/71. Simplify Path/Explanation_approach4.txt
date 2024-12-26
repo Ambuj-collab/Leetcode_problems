@@ -1,0 +1,59 @@
+Problem Description:
+----------------------
+In the given problem, we are asked to take an absolute path for a file or directory in a Unix-style file system and convert it to a simplified canonical path.
+
+An absolute path is a full path from the root of the file system and starts with a slash ('/'). The path may contain several special components:
+
+	1) A single period (.) represents the current directory.
+	2) A double period (..) represents moving up one directory level.
+	3) Multiple consecutive slashes (//) are considered identical to a single slash (/).
+
+The goal is to take such a path and simplify it according to the rules of Unix file systems so that:
+
+	1) The simplified path must begin with a single slash (/).
+	2) Each pair of directories must be separated by a single slash (/).
+	3) The path must not end with a trailing slash (/).
+	4) The path should not contain any . or .., as they should be resolved to actual directories on the path from the root to the target.
+
+For example, given the path "/a//b////c/d//././/..", the simplified canonical path would be "/a/b/c".
+
+Intuition:
+------------
+The intuition behind the solution involves using a stack to process each component of the path from left to right. A stack is ideal for this task because it allows us to add and remove directories in the correct order - the last directory we moved into is the first one we'll move out of when we encounter a .. directive.
+
+Here is how we can break down the problem and use a stack to solve it:
+
+	1) Split the path by slashes, which gives us a list of directory names and other components like . and ... We can then iterate through this list.
+	2) Ignore any empty strings resulting from consecutive slashes, as well as any . components, since they don't change the current directory.
+	3) If a .. is encountered, check if there are any directories in the stack that we can "move up" from. If the stack is not empty, we pop the last directory off, effectively moving up a directory level.
+	4) Add any other directory names to the stack, as they represent moving into a new directory.
+	5) Once we've processed all components of the path, we combine the directories in the stack to form the simplified canonical path. To adhere to Unix-style paths, we ensure that the path begins with a slash and each directory is separated by a single slash.
+	6) We do not add a trailing slash, because the canonical path format specifies that the path should not end with one.
+
+Using this approach allows us to handle complex, redundant, or relative paths and convert them into their simplest form, which is the essence of simplifying a canonical path in a Unix-style file system.
+
+
+Example Walkthrough:
+----------------------
+Let's apply the solution approach to a small example path: "/home//foo/./bar/../baz/"
+
+According to the approach:
+
+1) Split the path by slashes to get the components: ["home", "", "foo", ".", "bar", "..", "baz", ""].
+
+2) Initialize an empty stack stk: [].
+
+3) Iterate over each component:
+	a) Skip "" and ".".
+	b) home: Push onto the stack ["home"].
+	c) foo: Push onto the stack ["home", "foo"].
+	d) bar: Push onto the stack ["home", "foo", "bar"].
+	e) ..: Pop from the stack to get ["home", "foo"].
+	f) baz: Push onto the stack ["home", "foo", "baz"].
+	g) Skip "" at the end, since the path should not end with a trailing slash.
+
+4) Construct the canonical path by joining the elements in the stack with '/', and prepend a '/' to the result. The canonical path is "/home/foo/baz".
+
+5) Return the final simplified canonical path: "/home/foo/baz".
+
+In this example, the stack has allowed us to keep track of the directories we have moved into and efficiently handle the case when we needed to move back up a directory due to the ".." component. The resulting path follows all the rules for a simplified canonical path and gives us the correct simple path from a more complex and redundant one.

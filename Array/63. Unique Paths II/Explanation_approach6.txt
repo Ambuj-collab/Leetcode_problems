@@ -1,0 +1,81 @@
+Problem Description:
+-----------------------
+You are presented with a grid represented by an m x n integer array called grid. This grid is filled with either 0's or 1's, which denote empty spaces and obstacles, respectively. There is a robot situated at the top-left corner of the grid, i.e., at grid[0][0]. The goal for the robot is to reach the bottom-right corner of the grid, namely grid[m - 1][n - 1].
+
+The robot can only move in two directions at any given time: either down or to the right. Given these movement restrictions and the presence of obstacles (denoted by 1's), the task is to calculate the number of unique paths the robot can take to reach its destination without traversing any of the obstacles.
+
+To provide a solution, the assumption is made that the number of unique paths will not exceed 2 * 10^9.
+
+
+Intuition:
+-------------
+When thinking about the robot's journey from the top-left to the bottom-right corner, we can frame the problem using dynamic programming. The approach focuses on the concept that the number of ways to reach a particular cell in the grid is the sum of the ways to reach the cell directly above it and the cell to its immediate left, since the robot can only move down or right.
+
+However, when a cell contains an obstacle, the robot cannot travel through it, which means this cell contributes zero paths to its adjacent cells.
+
+Here's a breakdown of the dynamic programming solution:
+1) Start by initializing a 2D array dp (same dimensions as grid) to store the number of ways to reach each cell.
+2) Set the value of dp[i][0] (first column) and dp[0][j] (first row) to 1 for as long as there are no obstacles. This represents the fact that there is only one way to move along the top row or the leftmost column when there are no obstacles in those positions.
+3) Loop through the grid starting from cell dp[1][1] and move rightward and downward.
+4) For every cell, check if it is not an obstacle. If it isn't, set dp[i][j] to the sum of dp[i - 1][j] (the number of ways to reach from above) and dp[i][j - 1] (the number of ways to reach from the left).
+5) If you encounter an obstacle, set the number of ways to 0 because the robot can't pass through obstacles.
+6) Continue this process until you reach the bottom-right corner of the grid.
+7) The final answer, the number of unique paths to the bottom-right corner avoiding obstacles, will be found in dp[m-1][n-1].
+
+With this approach, we can systematically compute the number of unique paths available to the robot, taking into consideration the positioning of the obstacles.
+
+
+Example Walkthrough:
+----------------------
+Let's go through a small example to illustrate the dynamic programming approach described in the solution.
+
+Consider the following grid grid where 0 denotes an empty space and 1 denotes an obstacle:
+	grid = [
+		[0, 0, 0],
+		[0, 1, 0],
+		[0, 0, 0]
+	]
+
+We aim to calculate the number of unique paths from grid[0][0] to grid[2][2].
+
+1) Data Structure Initialization: Initialize the dp array with zeros.
+	dp = [
+		[0, 0, 0],
+		[0, 0, 0],
+		[0, 0, 0]
+	]
+
+2) Base Cases Initialization: Populate the first row and first column as per the approach, considering the obstacles.
+	After initialization:
+	dp = [
+		[1, 1, 1],
+		[1, 0, 0],
+		[1, 0, 0]
+	]
+
+The obstacle in grid[1][1] means the robot cannot go through it, so we leave dp[1][1] as 0.
+
+3) Dynamic Programming Loop: We compute the values of the remaining cells.
+
+	For dp[1][2]: Since the cell above it (dp[1][1]) is blocked by an obstacle, we only add the paths from the left (dp[1][1]), resulting in dp[1][2] = 1.
+
+	For dp[2][1]: Similar to the previous, we only add the paths from the above (dp[1][1] is 0 due to the obstacle) and the left (dp[2][0] is 1), resulting in dp[2][1] = 1.
+
+	Recalculated dp after iteration:
+	dp = [
+		[1, 1, 1],
+		[1, 0, 1],
+		[1, 1, 0]
+	]
+	For dp[2][2]: We add the values from above (dp[1][2] = 1) and the left (dp[2][1] = 1), giving us dp[2][2] = 2.
+
+	Final dp array:
+	dp = [
+		[1, 1, 1],
+		[1, 0, 1],
+		[1, 1, 2]
+	]
+
+4) Construct the Return Value: The value at dp[2][2] is 2, signifying there are two unique paths from start to destination that avoid the obstacles.
+
+Therefore, for the given grid, the robot has exactly two unique paths to reach the destination from the starting point.

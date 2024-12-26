@@ -1,0 +1,56 @@
+Problem Description:
+----------------------
+The problem requires us to handle a collection of intervals, with each interval represented by a start and end time (inclusive). We're provided with an array of these intervals, and each interval is guaranteed not to overlap with any other. The intervals are sorted in ascending order based on their start times. Our task is to insert a new interval into this array while maintaining the order and the non-overlapping property of the intervals. If inserting the new interval causes any overlap, we must merge the overlapping intervals into a single interval that covers all the ranges.
+
+Our goal is to return the new list of intervals after the insertion has been completed correctly.
+
+
+Intuition:
+------------
+To solve this problem, we must first understand how to merge intervals. Merging involves combining overlapping intervals into one that spans the entire range covered by any overlapping intervals. Since the existing collection of intervals is already sorted and non-overlapping, they can be left as they are. We only need to focus on the newInterval.
+
+We start by simply appending newInterval to our intervals array. Even though this may break the sorting, we're going to merge any intervals that need it anyway, which will handle any issues caused by the insertion.
+
+Now, the merge process begins. We assume we have at least one interval in the array to start with. We'll compare each interval with the last interval in our answer list. There are two cases to consider:
+	1) If there is no overlap (the current interval's start time is greater than the last interval's end time in the answer list), we can safely add the current interval to the answer list.
+	2) If there is an overlap (the current interval's start time is less than or equal to the last interval's end time in the answer list), we merge by updating the end time of the last interval in the answer list. The end time after the merge will be the maximum end time between the overlapped intervals.
+
+The merge() method sorts the updated intervals array and performs the above steps to ensure that the resulting array has no overlaps. It's important to note that sorting is required only if the newInterval was inserted in such a way that it breaks the original order. Since we append newInterval directly, sorting is indeed necessary as the first step of merging. After the merge is completed, the answer list will be returned, representing the intervals after the new interval has been inserted correctly.
+
+
+Example Walkthrough:
+-----------------------
+Let's walk through a simple example to illustrate the solution approach described.
+
+Suppose we have the following set of intervals already sorted and non-overlapping:
+Current intervals: [[1,2], [3,5], [6,7], [8,10], [12,16]]
+
+The task is to insert a new interval [4,9] into this set while maintaining the sorted order and non-overlapping intervals. Here's how the algorithm handles this:
+
+1) Append newInterval to intervals: Initially, our list of intervals is:
+		[[1,2], [3,5], [6,7], [8,10], [12,16]]
+	After appending the new interval, it becomes:
+		[[1,2], [3,5], [6,7], [8,10], [12,16], [4,9]]
+
+2) Sort the intervals: After appending the newInterval, the list of intervals has to be sorted again since the newInterval was added at the end without considering the order. The intervals list after sorting:
+	[[1,2], [3,5], [4,9], [6,7], [8,10], [12,16]]
+
+3) Initialize the answer list ans with the first interval: The ans list starts as:
+	[[1,2]]
+
+4) Iterate over the rest of the intervals and merge if necessary: The second interval in the sorted list is [3,5]. There is no overlap with [1,2], so it is appended to ans:
+	[[1,2], [3,5]]
+
+	Next, we encounter the newInterval which is [4,9]. Since it overlaps with [3,5], we merge them by updating the end time of [3,5] to the end time of [4,9]:
+		[[1,2], [3,9]]
+
+	The next interval [6,7] is already covered by [3,9], so no new interval is added, but the same interval remains. The interval [8,10] also gets merged into [3,9], resulting in:
+		[[1,2], [3,10]]
+
+	Finally, the interval [12,16] does not overlap with [3,10], and is appended to ans:
+		[[1,2], [3,10], [12,16]]
+
+5) Return the answer list ans after all intervals have been processed: The final ans returned by the algorithm is:
+	[[1,2], [3,10], [12,16]]
+
+This illustrates how the intervals are correctly merged and the final list of intervals is obtained by following the solution approach.

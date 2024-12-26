@@ -1,0 +1,80 @@
+Problem Description:
+-----------------------
+Given a 2D matrix of integers, the challenge is to modify the matrix such that if any cell contains the value 0, then all cells in the same row and column as that 0 are set to 0. The crucial requirement is that this transformation must be done 'in place,' which means you cannot use any additional memory to store large temporary data structures like a copy of the original matrix. The goal is to achieve the required transformation efficiently with respect to space.
+
+
+Intuition:
+-------------
+To solve this problem we need to track the rows and columns that must be set to 0 without using extra space for another matrix. We can use two boolean variables (i0 and j0) to keep track of whether the first row and the first column should be zeroed as they will serve as markers.
+
+Here is an intuition for the solution approach:
+1) If we find a 0 in any cell of the matrix, the row and column of that cell must be zeroed out. However, if we immediately reset all cells in the same row and column to 0, information about other 0s in those rows and columns could be lost.
+
+2) To work around this, we can use the first cell of each row and column as a flag that indicates whether that entire row or column should be set to 0.
+
+3) First, we check if the first row and first column should be zeroed by looking for any 0s and store this information in i0 for the first row, and j0 for the first column.
+
+4) We iterate over the rest of the matrix (to avoid overriding i0 and j0 flags) and if we find a 0, we set the first cell of that row and column to 0. These markers will be used later to update the rows and columns.
+
+5) After marking, we iterate over the matrix again, ignoring the first row and column, and update cells to 0 if their row or column marker is 0.
+
+6) Finally, we use i0 and j0 to set the first row and column to 0 if needed.
+
+This approach allows us to keep track of which rows and columns need to be zeroed without using additional space, hence giving us an in-place solution.
+
+
+Solution Approach:
+---------------------
+The solution involves a few logical steps to minimize space complexity while ensuring the entire row and column are set to 0 for each 0 in the matrix. Here's a step-by-step breakdown:
+
+1) Initialization: We initialize two boolean variables i0 and j0. We use i0 to check if the first row needs to be set to 0 by iterating through the first row. Similarly, j0 is used to check if the first column needs to be set to 0 by iterating down the first column.
+
+2) Marking Rows and Columns: To preserve the information of where 0s are in the matrix without using extra space, we use the first row and column of the matrix itself. As we iterate through the matrix starting from element at (1,1), if a 0 is encountered at position (i,j), we mark the first element of row i (at position (i,0)) and the first element of column j (at position (0,j)) to 0.
+
+This way, we're using the matrix itself to keep track of rows and columns that will eventually be zeroed out. This clever trick avoids the need for additional data structures for marking purposes.
+
+3) Zeroing Rows and Columns: Having marked the rows and columns that need to be updated, we now iterate again through the matrix starting from element at (1,1) to m-1 x n-1. For any cell (i,j), we check if the first element of row i or the first element of column j is 0. If either is 0, this implies the current cell should also be 0, and we update it accordingly.
+
+4) Finalizing the First Row and Column: We check i0 and j0 from the first step. If i0 is true, we zero out the first row. Similarly, if j0 is true, we zero out the first column.
+
+This in-place algorithm cleverly exploits the matrix's own first row and column to store the state needed to carry out the required transformation. This results in an O(1) space complexity as no additional storage proportional to the size of the matrix is needed, and the time complexity remains O(m x n) since we need to potentially look at all elements in the m x n matrix twice.
+
+
+Example Walkthrough:
+----------------------
+Let's consider a small 3x3 example matrix to illustrate the solution approach:
+	Matrix before:
+	[ [1, 2, 3],
+	  [4, 0, 6],
+	  [7, 8, 9] ]
+
+1) Initialization: i0 and j0 are initially set to false. We inspect the first row and first column to check for any 0s:
+	a) First row has no 0, thus i0 remains false.
+	b) First column also has no 0, so j0 remains false.
+
+2) Marking Rows and Columns: We start inspecting from (1,1):
+	a) No 0 at (1,1) — we move on.
+	b) We find a 0 at (1,3), so we mark the first element of row 1 (at position (1,0)) and the first element of column 3 (at position (0,3)) to 0.
+	
+	Now the matrix looks like this with markers set:
+	[ [1, 2, 0],  // Column 3 marked
+	  [0, 0, 6],  // Row 1 marked and the encountered 0
+	  [7, 8, 9] ]
+
+3) Zeroing Rows and Columns: With our markers set, we iterate through the matrix starting at (1,1) again and update according to markers:
+	a) Cell (1,1) stays 1 since neither the first element of row 1 nor column 1 is 0.
+	b) Cell (1,2) becomes 0 because the first element of column 2 (position (0,2)) is 0.
+	c) Continue through the matrix, checking the respective row or column start for a 0 marker.
+
+	Updated matrix now looks like this:
+	[ [1, 0, 0],  // Column 3 zeroed out
+	  [0, 0, 0],  // Row 1 zeroed out
+	  [7, 0, 9] ] // Column 2 zeroed out because of the marker at (0,2)
+
+4) Finalizing the First Row and Column: Since i0 and j0 are both false, we know the first row and column can remain unchanged.
+	The final matrix after performing the in-place transformation looks like:
+	[ [1, 0, 0],
+	  [0, 0, 0],
+	  [7, 0, 9] ]
+
+This demonstrates how the matrix is correctly transformed according to the problem's rules without using any additional space, as all the zeroing information is stored within the original matrix itself.

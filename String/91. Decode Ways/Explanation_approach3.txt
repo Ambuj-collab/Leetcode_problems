@@ -1,0 +1,51 @@
+Problem Description:
+----------------------
+The problem involves decoding a message that consists exclusively of numeric digits, which represents encoded letters 'A' to 'Z' where 'A' corresponds to '1', and 'Z' to '26'. The objective is to determine the total number of valid ways the given numeric message can be decoded back into letters. A valid decoding is one where all the digits are grouped into subparts that represent numbers from '1' to '26'. For example, the sequence "123" can be decoded as 'ABC' (1, 2, 3), 'AW' (1, 23), or 'LC' (12, 3). However, some groupings may be invalid, such as "06" because '0' does not correspond to any letter, and the leading zero makes it an invalid encoding for 'F', which is '6'.
+
+
+Intuition:
+------------
+The solution to the problem is grounded in dynamic programming, which is a method used to solve problems by breaking them down into simpler subproblems and solving each subproblem just once, storing its solution. The concept is to start with the base of the string and compute the number of ways we can decode it, then work our way up, adding the number of ways the rest of the string can be decoded.
+
+For each character in the string s, we have one of three cases:
+	1) The current character is '0'. We cannot decode '0' on its own because there's no corresponding letter. So, we set the current number of decodings (h) to 0.
+
+	2) The current character is not '0'. This means we can decode it as a single digit. We set the current number of decodings (h) to the previous number of decodings (g), which represents the number of ways we can decode the string up to this point ignoring the previous digit.
+
+	3) The current character, along with the previous character, forms a valid two-digit number less than or equal to 26 (ignoring leading zeros). If this is the case, we add the number of decodings two characters back (f) to our current number of decodings (h). This represents considering the two-digit number as a single letter and counting the ways to decode the string up to this new point.
+
+We iteratively update f and g, where f represents the number of ways to decode the string up to the previous character, and g represents the number of ways to decode the string up to the current character. By the end of the iteration, g will give us the total number of ways the entire string can be decoded.
+
+
+Example Walkthrough:
+----------------------
+Let's use a small example to illustrate the solution approach with the string s = "121". We want to determine the number of valid decodings for this message.
+
+1) Initialize two variables, f = 0 and g = 1. f will keep track of the ways to decode the string up to the character before the current one, and g keeps track of the ways to decode up to the current character.
+
+2) Start iterating over the string s:
+	a) Iteration 1: i = 1, c = '1'
+		i) h is initialized to 0. Since c is not '0', set h to g, which is 1.
+		ii) There's no character before the first one, so we don't check the two-character combination here.
+		iii) Update f to be the previous value of g, which is 1, and g now becomes the value of h, also 1.
+
+	b) Iteration 2: i = 2, c = '2'
+		i) h initialized to 0. c is not '0', so h is set to the current g value, which is 1.
+		ii) The previous character '1' and current '2' can form '12'. Since '12' is ≤ 26, we add the value of f to h.
+		iii) Now, h is 1 (g) + 1 (f) = 2, which means there are two ways to decode "12".
+		iv) Update f to g (1), and update g to the current h (2).
+
+	c) Iteration 3: i = 3, c = '1'
+		i) h initialized to 0. c is not '0', so h is set to the current g value, which is 2.
+		ii) The previous character '2' and the current '1' can form '21'. Since '21' is ≤ 26, we add the value of f (1) to h.
+		iii) Now, h is 2 (g) + 1 (f) = 3, which means there are three ways to decode "121".
+		iv) As this is the last iteration, f is updated to g (2), and g is updated to h (3).
+
+3) At the end of iteration, g now holds the value 3, which is the total number of ways to decode the entire string "121".
+
+The final answer for the total number of valid ways to decode string s = "121" is 3. This is because we can decode "121" as follows:
+	a) 'ABA' (decoded as 1, 2, 1)
+	b) 'AU' (decoded as 1, 21)
+	c) 'LA' (decoded as 12, 1)
+
+This demonstrates the dynamic programming approach to decoding the message, efficiently calculating the result iteratively without redundant recalculations.

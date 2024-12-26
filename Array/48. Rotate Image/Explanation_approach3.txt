@@ -1,0 +1,25 @@
+Problem Description:
+----------------------
+You're given a square matrix, which is a 2D array, and your task is to rotate this image by 90 degrees clockwise. To clarify, rotating an image by 90 degrees clockwise means that the image is turned in such a way that if you start from the top left corner of the original image, it would become the top right corner of the rotated image. However, the challenge is to perform this rotation in-place, that is, without using any extra space for another array. You'll need to transform the matrix within the given data structure itself.
+
+
+Intuition:
+------------
+To rotate the matrix by 90 degrees clockwise, you can think of a two-step process. First, imagine if you flip the image upside down, which can be visualized as folding the bottom row up to where the top row is, and vice versa. This can be done by swapping the elements in the first row with the corresponding elements in the last row, then the second row with the second-to-last row, and so on until you reach the middle of the matrix.
+
+Once the matrix is flipped upside down, the next step is to flip it along its main diagonal. The main diagonal of a matrix is a line of entries starting from the top-left corner to the bottom-right corner. Flipping a matrix along the main diagonal means that for each element matrix[i][j], you swap it with the element matrix[j][i].
+
+By following these two steps - flipping the matrix upside down and then swapping elements along the main diagonal - each element moves to its correct position as it would be after a 90-degree clockwise rotation.
+
+
+Solution Approach:
+---------------------
+The solution provided is a two-step process that involves:
+	1) Flipping the matrix upside down.
+	2) Then, flipping the matrix along its main diagonal.
+
+For the first step, the code iterates through the first half of the rows (hence the range(n >> 1) which is a bitwise shift operation equivalent to range(n / 2)) and swaps all elements in row i with the corresponding elements in row n-i-1. The swapping is done column by column for each row [for (int col = 0; col < n; ++col)]. This effectively turns the matrix upside down without using any additional space.
+
+Once the matrix is flipped upside down, we proceed with the second step, which involves swapping elements across the main diagonal. We iterate row by row, and within each row, we only go up to the main diagonal [for (int col = 0; col < row; ++col)] to avoid re-swapping the already swapped elements. At each iteration, we swap the element at position [i][j] with the element at position [j][i]. This flips the matrix along the main diagonal and completes the 90-degree rotation.
+
+The patterns used in this algorithm are in-place replacement to avoid additional memory usage, and careful indexing to walk through the 2D matrix in the required order. The operations of this method are designed to achieve the rotation with only O(1) additional space, by performing swaps directly on the given matrix.

@@ -1,0 +1,32 @@
+Problem Description:
+-----------------------
+In this LeetCode problem, you are given the dimensions of a grid (rows x cols) and a starting cell within that grid, defined by its row (rStart) and column (cStart). Your task is to simulate a walk from the starting cell in a clockwise spiral pattern until you have visited every cell in the grid. This spiral pattern means you move east, then south, then west, and finally north, increasing the distance you move in a specific direction, before turning, by one cell each time you complete a full cycle (east, south, west, and north). As you perform this walk, even if you move outside the grid's boundaries, you keep the pattern, and you may return to the grid's boundary later. The goal is to visit all cells on the grid and return a list of their coordinates in the order they were visited.
+
+
+Intuition:
+-------------
+The problem can be solved by simulating the walk in a spiral pattern as described. The intuition behind this solution is to track movement direction and counter changes in direction while traversing the grid. We should keep in mind that it is necessary to handle cases where the walk takes us outside the grid boundary.
+
+We initialize the solution by adding the starting position to our result set. If the grid is of size 1x1, the problem is already solved with this step. For larger grids, we have to begin walking in a spiral. We know that for a spiral walk, the number of steps we take in the east or south directions will always be one more than the number of steps we took in the west or north directions. Conversely, the number of steps we take in the north or south direction will be equal to the number of steps we will take in the previous horizontal movement.
+
+To implement this pattern, we maintain a variable k that represents how many steps we should move in the current direction. We start with k = 1, as the first move after the starting position is just one step to the right (east). We then increase k by 2 after a full cycle of directions (east > south > west > north) to account for the changing step count in the spiral path.
+
+For each direction, we move k steps, updating our current position and conditionally add the new position to the result set if it lies within the grid's boundaries. We keep doing so until we have visited all rows * cols cells.
+
+
+Solution Approach:
+--------------------
+The implementation of the solution follows a pattern-based approach by simulating movements on the grid. Here's how it's done step by step:
+
+1) We define a 2D array result to keep track of the cells visited, starting with the initial cell [rStart, cStart].
+2) We check if the grid size is 1x1. If so, we immediately return result because the single starting cell is the only cell to visit.
+3) We then set k = 1, which will determine the number of steps we take in a given direction before turning. This k will be increased as necessary to simulate the spiral pattern.
+4) A infinite for loop begins, which will run until we've visited all rows * cols cells of the grid.
+5) Inside the loop, we iterate over a list of direction increments and the corresponding step counts. The list has tuples in the format [dr, dc, dk], where dr is the row increment (0 for east or west, 1 for south, -1 for north), dc is the column increment (1 for east, -1 for west, 0 for north or south), and dk being the number of steps to move in that direction.
+6) For each direction, we run another loop for dk steps:
+	a) For each step, we update rStart and cStart with dr and dc respectively.
+	b) We then check if the new position is within the grid's boundaries by verifying 0 <= rStart < rows and 0 <= cStart < cols. If yes, we append the position to result.
+	c) We check if we have visited rows * cols cells. If we have, we return result as the complete list of visited cells.
+7) After completing the movement in all four directions, we increment k by 2 to maintain the spiral pattern for the next cycle of directions.
+
+The algorithm utilizes simple iteration and directional increments to traverse the grid in a predictable, spiral pattern. No complex data structures are necessary beyond a list to hold the visited cell coordinates. The pattern's consistency allows us to increment k strategically, ensuring we expand our traversal in a spiraling outward fashion. This method provides full coverage of the grid while recording our path.

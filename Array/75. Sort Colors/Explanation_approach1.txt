@@ -1,0 +1,90 @@
+Problem Description:
+-----------------------
+In this problem, you are given an array nums which contains n elements. Each element represents a color coded as an integer: 0 for red, 1 for white, and 2 for blue. Your task is to sort this array in a way that the colors are grouped together and in the order of red, white, and blue. The sorting has to be done in-place, without using any extra space for another array, and you cannot use the library's sort function.
+
+
+Intuition:
+-------------
+To solve this problem, the solution approach uses a variant of the famous Dutch National Flag algorithm proposed by Edsger Dijkstra. The crux of this algorithm is a three-way partitioning technique that segments an array into three parts to sort the elements of three different types.
+
+In this case, we will maintain three pointers:
+	1) i - All elements before index i are 0s (reds).
+	2) j - All elements from index j onwards are 2s (blues).
+	3) k - Current element that is being inspected.
+
+Initially, i is set to -1, indicating there are no 0s in the beginning, and j is set to the length of nums, indicating there are no 2s at the end. The k pointer will start from 0 and move towards j.
+
+We iterate through the array with k, and when we find a 0, we increment i and swap the values at i and k. If we find a 2, we decrement j and swap the values at k and j but we don't move the pointer k because the new element we swapped from position j might be 0, so it needs to be rechecked. If the element is 1, it's already in its correct place since we are ensuring all 0s and 2s are moved to their correct places. So, for 1, we just move k forward.
+
+We continue this process until k meets j, at which point all elements to the left of i are 0s, elements between i and j are 1s, and all elements from j onwards are 2s, resulting in a sorted array.
+
+
+Solution Approach:
+---------------------
+The solution implements the Dutch National Flag algorithm, which is a partitioning strategy.
+
+Here's a step-by-step explanation using the Reference Solution Approach:
+
+1) Initialize three pointers (i, j, and k):
+	a) i starts just before the array at -1. This will eventually track the position up to which 0s have been sorted.
+	b) j starts after the end of the array at len(nums). This will eventually track the position from which 2s have been sorted.
+	c) k starts at 0 and is used to iterate through the array.
+
+2) Perform iterations while k < j:
+a) If nums[k] == 0, this element needs to be moved to the front.
+	i) Increment i to move it to the next unsorted position.
+	ii) Swap the elements at i and k (nums[i], nums[k] = nums[k], nums[i]), effectively moving the 0 to its correct place.
+	iii) Increment k to move on to the next element.
+b) Else, if nums[k] == 2, this element needs to be moved to the end.
+	i) Decrement j to move it towards the first unsorted position from the end.
+	ii) Swap the elements at k and j (nums[j], nums[k] = nums[k], nums[j]), moving the 2 closer to its correct place. Here we don't increment k because the newly swapped element could be 0 or 1 and it has not been evaluated yet.
+c)If nums[k] == 1, no action is needed as 1s are automatically sorted when 0s and 2s are moved to their correct places.
+	Simply increment k to continue to the next element.
+
+By following this approach, we continue to partition the array into three parts: 0s before i, 1s between i and j, and 2s after j. The loop continues until k becomes equal to j, meaning all elements have been examined and placed in their correct position. Therefore, the array is now sorted in-place with red (0), white (1), and blue (2) colors in the correct order without using any additional space or the library sort function.
+
+
+Example Walkthrough:
+----------------------
+Let's say we have an array nums as [2, 0, 1, 2, 1, 0]. We need to sort this array using the Dutch National Flag algorithm so that all 0s (reds) come first, followed by 1s (whites), and then 2s (blues).
+
+Here's a step-by-step process of how the algorithm would sort this array:
+1) Initialize the pointers i, j, and k:
+	a) i is set to -1
+	b) j is set to 6 (since the array length is 6)
+	c) k is set to 0
+
+2) Start iterating with k while k < j (while k is less than 6):
+	a) Iteration 1:
+		i) nums[k] is 2. Since k==0, we need to move this 2 to the end.
+		ii) We decrement j to 5.
+		iii) We swap nums[k] with nums[j]. So the array becomes [0, 0, 1, 2, 1, 2].
+		iv) We don't increment k as we need to evaluate the swapped element.
+
+	b) Iteration 2:
+		i) Now nums[k] is 0. This needs to go at the beginning.
+		ii) We increment i to 0.
+		iii) We swap nums[i] with nums[k]. The array is still [0, 0, 1, 2, 1, 2] since both nums[i] and nums[k] are 0.
+		iv) We increment k to 1.
+
+	c) Iteration 3:
+		i) nums[k] is another 0.
+		ii) We increment i to 1.
+		iii) We swap nums[i] with nums[k], but the array remains unchanged [0, 0, 1, 2, 1, 2] as they are the same value.
+		iv) Increment k to 2.
+
+	d) Iteration 4:
+		i) nums[k] is 1. This is already in the correct position.
+		ii) We simply increment k to 3.
+
+	e) Iteration 5:
+		i) nums[k] is 2, needs to move to the end.
+		ii) We decrement j to 4.
+		iii) We swap nums[k] with nums[j]. Now the array looks like [0, 0, 1, 1, 2, 2].
+		iv) Do not increment k as we need to evaluate the swapped element.
+
+	f) Iteration 6:
+		i) nums[k] is now 1. It should stay in place.
+		ii) Increment k to 4. Now k == j, so we stop.
+
+The final sorted array is [0, 0, 1, 1, 2, 2], with all the colors grouped together in the correct order without using any extra space or sorting functions.

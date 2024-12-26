@@ -1,0 +1,30 @@
+Problem Description:
+-----------------------
+The given problem requires us to merge all the overlapping intervals in a list. An interval is represented as a list with two elements where the first element is the start and the second is the end of the interval ([start, end]). An "overlap" occurs when one interval's start is less than or equal to the end of another interval. The goal is to simplify the list of intervals to a list where no intervals overlap, ensuring that the new list collectively spans the same range as the original intervals.
+
+Here's an example for clarification:
+
+Original list of intervals: [[1,3],[2,6],[8,10],[15,18]]
+
+After merging all the overlapping intervals, we get: [[1,6],[8,10],[15,18]]
+
+In the merged intervals, there is no pair of intervals such that one overlaps with another.
+
+Intuition:
+-------------
+The intuition behind the solution comes from two realizations:
+1) If we sort the intervals based on their start times, any overlapping intervals will be placed next to each other in the list.
+2) To merge intervals, we only need to track the end time since the sorted order ensures that the next interval's start time is always greater than or equal to the current interval's start time.
+
+The approach is as follows:
+1) Sort the list of intervals based on their start times.
+2) Initialize a new list to hold the merged intervals and add the first interval to it.
+3) Iterate through the rest of the intervals, and for each one, compare its start time with the end time of the last interval in the merged list.
+4) If the start time is greater than the end time of the last interval in the merged list, then there is no overlap, and we can add the current interval as a new entry to the merged list.
+5) If there is overlap (the start time is less than or equal to the end time), we update the end time of the last interval in the merged list to be the maximum of the end times of the last interval and the current interval.
+6) The process continues until we have gone through all the intervals.
+7) We return the merged list of intervals as the answer.
+
+This solution guarantees that we merge all overlapping intervals and result in a list of intervals with no overlaps.
+
+The algorithm uses the sort-merge pattern, which is common for interval problems. By sorting and then merging, we bring the overall run-time complexity down to O(N log N) where N is the number of intervals, with the sort contributing to the log N factor and the merge process being linear in nature.

@@ -1,0 +1,82 @@
+Problem Description:
+-----------------------
+The task is to find the largest rectangular area in a histogram, which consists of a series of adjacent bars of varying heights. Each bar has a uniform width of 1 unit, and the height of each bar corresponds to each integer in the given heights array. To elaborate, imagine drawing rectangles starting from the base of each bar and extending them as wide as possible without crossing the height of shorter bars adjacent to it. The goal is to determine the maximum area covered by such a rectangle.
+
+
+Intuition:
+------------
+The intuition behind the solution involves using a stack and a concept called "Monotonic Stack" which helps us process the bars in a way that we can calculate the maximum width for each bar where it remains the tallest bar within that width.
+
+Here is the reasoning for each step in the algorithm:
+
+    a) We initialize left and right arrays to keep track of the bounds for the largest rectangle with height[i] as the smallest bar. left[i] will store the index of the first bar to the left that is shorter than height[i], and right[i] will store the index of the first bar to the right that is shorter than height[i].
+
+    b) We traverse the heights while using a stack stk to maintain indices of bars in a non-decreasing order. The stack will help us in finding the left and right bounds for each bar.
+
+    c) For each bar h with index i:
+        i) We pop from the stack while the bar at the top of the stack has a height greater than or equal to h. Each time we pop, we update the right bound for the popped index because we just found a shorter bar on the right.
+        ii) If the stack is not empty after popping, it means the bar on the top of the stack is the first bar to the left of h that is shorter, so we update the left[i] to that index.
+        iii) We then push i onto the stack, since it might be the potential left bound for a future bar.
+
+    d) After we have the left and right bounds for each bar, the maximum possible width for each bar is given as (right[i] - left[i] - 1). We multiply this with the height heights[i] of the bar to get the area of the largest rectangle with the bar at i being the shortest bar. We calculate this for every bar.
+
+    e) Finally, we return the maximum area out of all the areas we have computed.
+
+This algorithm is efficient because each bar is pushed and popped from the stack exactly once, and the left and right bounds are updated during this process. We're leveraging the stack to perform all necessary computations as we iterate through the histogram, which allows us to compute the largest rectangle in linear time.
+
+
+Example Walkthrough:
+----------------------
+Let's illustrate the solution approach with a small example. Consider the heights array:
+heights = [2, 1, 5, 6, 2, 3]
+
+This represents a histogram with 6 bars where the heights of the bars are [2, 1, 5, 6, 2, 3].
+
+    a) Initializing Data Structures:
+		stk = []
+		left = [-1] * len(heights)
+		right = [len(heights)] * len(heights)
+
+    b) Traversing Heights: We start traversing the heights array.
+
+        i) For heights[0], since the stack is empty, no action is taken other than pushing the index onto the stack:
+			stk = [0]
+
+        ii) For heights[1], the current height 1 is less than the height at the top of the stack 2. We pop from the stack (popping 0):
+			stk = []
+
+        iii) We update right[0] = 1 and since stk is now empty, we push the current index 1 onto the stack:
+			stk = [1]
+
+        iv) For heights[2] (5), the stack action yields:
+			stk = [1, 2]
+
+        v) For heights[3] (6):
+			stk = [1, 2, 3]
+
+        vi) For heights[4] (2), we start popping since 2 is less than 6 and 5. After popping 3 and 2:
+			stk = [1]
+
+        vii) We update right[3] = 4, right[2] = 4. The stack still has 1 in it, so left[4] = 1. Push 4 onto the stack:
+			stk = [1, 4]
+
+        viii) For heights[5] (3):
+			stk = [1, 4, 5]
+
+    c) Calculating the Largest Area:
+
+        i) We've completed the traversal, left = [-1, -1, 1, 2, 1, 4] and right = [1, 6, 4, 4, 6, 6].
+
+        ii) Calculate the widths and areas for each bar; for example:
+
+            a) For i=2 (height = 5):
+				width = right[2] - left[2] - 1 = 4 - 1 - 1 = 2
+				area = heights[2] * width = 5 * 2 = 10
+
+            b) Repeat this for each bar and find the max area:
+				areas = [2 * (1 - (-1) - 1), 1 * (6 - (-1) - 1), ... ]
+
+            c) After evaluating all areas, the largest one is 10 (for heights[2]).
+
+    d) Return the Largest Area:
+        The maximum calculated area is 10, which is the area of the largest rectangle in the histogram we started with.

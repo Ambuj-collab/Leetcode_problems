@@ -1,0 +1,79 @@
+Problem Description:
+----------------------
+In this problem, we have an integer array nums that is initially sorted in ascending order and contains distinct values. However, nums might have been rotated at some unknown pivot index k, causing the order of elements to change. After the rotation, the part of the array after the pivot index comes before the part of the array before the pivot index. Our goal is to find the index of a given integer target in the rotated array. If the target exists in the array, we should return its index; otherwise, return -1.
+
+Since the array is rotated, a standard binary search won't immediately work. We need to find a way to adapt binary search to work under these new conditions. The key observation is that although the entire array isn't sorted, one half of the array around the middle is guaranteed to be sorted.
+
+The challenge is to perform this search efficiently, achieving a time complexity of O(log n), which strongly suggests that we should use binary search or a variation of it.
+
+
+Intuition:
+------------
+The intuition behind the solution is to modify the binary search algorithm to handle the rotated array. We should focus on the property that the rotation splits the array into two sorted subarrays. When we calculate the middle element during the binary search, we can determine which part of the array is sorted: the part from the start to the middle or the part from the middle to the end. Once we know which part is sorted, we can see if the target lies in that range. If it does, we adjust our search to stay within the sorted part. If not, we search in the other half.
+
+To implement this, we have two pointers left and right that define the bounds of our search space. At each step, we compare the target with the midpoint to decide on which half to continue our search. There are four cases to consider:
+
+1) If the target and the middle element both lie on the same side of the pivot (either before or after), we perform the standard binary search operation.
+2) If the target is on the sorted side, but the middle element isn't, we search on the sorted side.
+3) If the target is not on the sorted side, but the middle element is, we search on the side that includes the pivot.
+4) If neither the target nor the middle element is on the sorted side, we again search on the side including the pivot.
+
+By repeatedly narrowing down the search space and focusing on either the sorted subarray or the subarray containing the pivot, we can find the target or conclude it's not present in O(log n) time.
+
+
+Solution Approach:
+--------------------
+The solution implements a modified binary search algorithm to account for the rotated sorted array. Below is a step-by-step walkthrough of the algorithm as shown in the provided code snippet:
+
+1) Initialize two pointers left and right to represent the search space's bounds. left starts at 0, and right starts at n - 1, where n is the length of the input array nums.
+
+2) The binary search begins by entering a while loop that continues as long as left < right, meaning there is more than one element in the search space.
+
+3) Calculate mid using (left + right) >> 1. The expression >> 1 is equivalent to dividing by 2 but is faster, as it is a bitwise right shift operation.
+
+4) Determine which part of the array is sorted by checking if nums[0] <= nums[mid]. This condition shows that the elements from nums[0] to nums[mid] are sorted in ascending order.
+
+5) Check if target is between nums[0] and nums[mid]. If it is, that means target must be within this sorted portion, so adjust right to mid to narrow the search space to this sorted part.
+
+6) If the target is not in the sorted portion, it must be in the other half containing the rotation point. Update left to mid + 1 to shift the search space to the right half of the array.
+
+7) If the sorted portion was the right half (nums[mid] < nums[n - 1]), check if target is between nums[mid] and nums[n - 1]. Adjust the search space accordingly by either moving left or right depending if the target is in the sorted portion or not.
+
+8) This loop continues until the search space is narrowed down to a single element.
+
+9) After exiting the loop, check if nums[left] is the target and return left if that's the case, indicating that the target is found at that index in the array.
+
+10) If the element at nums[left] is not the target, return -1 to indicate that target is not found in the array.
+
+This binary search modification cleverly handles the rotation aspect by focusing on which part of the search space is sorted and adjusting the search bounds accordingly. No additional data structures are used, and the algorithm strictly follows an O(log n) runtime complexity as required by the problem statement.
+
+
+Example Walkthrough:
+-----------------------
+Let's illustrate the solution approach with a small example. Assume we have the rotated sorted array nums = [6, 7, 0, 1, 2, 4, 5] and we are looking for the target value 1. The original sorted array before rotation might look something like [0, 1, 2, 4, 5, 6, 7], and in this case, the pivot is at index 2, where the value 0 is placed in the rotated array.
+
+1) We initialize our search bounds, so left = 0 and right = 6 (since there are 7 elements in the array).
+
+2) Start the binary search loop. Since left < right (0 < 6), we continue.
+
+3) Calculate the middle index, mid = (left + right) >> 1. This gives us mid = 3.
+
+4) Check if the left side is sorted by checking if nums[left] <= nums[mid] (comparing 6 with 1). It is false, so the left-half is not sorted, the right-half must be sorted.
+
+5) Since 1 (our target) is less than 6 (the value at nums[left]), we know the target is not in the left side. We now look into the right half since the rotation must have happened there.
+
+6) Update left to mid + 1, which gives left = 4.
+
+7) Re-evaluate mid in the next iteration of the loop. Now mid = (left + right) >> 1 = (4 + 6) >> 1 = 5. The middle element at index 5 is 4.
+
+8) Check again where the sorted part is. Now nums[left] <= nums[mid] (1 <= 4) is true, which means we are now looking at the sorted part of the array.
+
+9) Check if the target is within the range of nums[left] and nums[mid]. Here, 1 is within 1 to 4, so it must be within this range.
+
+10) Now we update right to mid, setting right = 5.
+
+11) Continue the loop. At this point, left = 4 and right = 5, mid = (4 + 5) >> 1 = 4. The value at nums[mid] is the target we are looking for (1).
+
+12) Since nums[mid] is equal to the target we return mid, which is 4.
+
+Using this approach, we successfully found the target 1 in the rotated sorted array and return the index 4. This example demonstrates the modified binary search algorithm used within the rotated array context.

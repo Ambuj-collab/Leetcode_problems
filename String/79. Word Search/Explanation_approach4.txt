@@ -1,0 +1,31 @@
+Approach:
+-----------
+1. Basic Checks:
+	If the word length is greater than the total number of cells on the board, it's impossible to find the word (return false).
+
+2. Character Frequency:
+	a) Count the frequency of each character in the board.
+	b) Early check: If any character in the word has a higher frequency than its corresponding character in the board, it can't exist (return false).
+
+3. Backtracking Search:
+a) Iterate through each cell on the board.
+b) For each cell, use a recursive helper function visit to explore neighboring cells.
+c) Base case in visit: If the entire word is found (start reaches the word length), return true.
+d) Check for invalid positions, already visited cells, and character mismatch.
+e) If the current character matches, mark the cell as visited and recursively explore neighboring cells (up, down, left, right) using visit.
+f) The search succeeds if a path is found that connects all characters in the word from the starting cell.
+g) If no path is found after exploring all neighboring cells, backtrack and return false.
+
+Key Points:
+---------------
+1) The code uses a depth-first search (DFS) approach to explore potential paths on the board.
+2) The visited array prevents revisiting cells and getting stuck in infinite loops.
+3) The early check based on character frequency avoids unnecessary exploration when the word can't exist due to insufficient characters.
+
+Complexity:
+--------------
+Time complexity:
+Worst-case: O(rows * cols * 4^(wordLength)): In the worst case, the code might need to explore all possible paths from each cell on the board. This can happen if the board is large, the word is long, and there are many potential paths to explore.
+
+Space complexity:
+O(rows * cols): The space complexity is dominated by the visited boolean array. It has dimensions rows x cols to keep track of visited cells during the backtracking search. This space complexity is considered linear with respect to the input size (board dimensions).

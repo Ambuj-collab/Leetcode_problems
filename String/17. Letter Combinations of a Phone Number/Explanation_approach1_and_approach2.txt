@@ -1,0 +1,54 @@
+Intuition:
+------------
+Given a string containing digits from 2-9 inclusive, we need to return all possible letter combinations that the number could represent, just like on a telephone's buttons. To accomplish this, we present two different approaches:
+
+1) Backtracking Approach: This approach leverages recursion to explore all possible combinations. We create a recursive function that takes the current combination and the next digits to explore. For each digit, we iterate through its corresponding letters and recursively explore the remaining digits. We append the combination when no more digits are left to explore.
+
+2) Iterative Approach: This approach builds the combinations iteratively without using recursion. We start with an empty combination and iteratively add letters for each digit in the input string. For each existing combination, we append each corresponding letter for the current digit, building new combinations.
+
+Differences:
+
+1) The backtracking approach relies on recursion to explore all possible combinations, whereas the iterative approach builds combinations step by step using loops.
+2) Both approaches have similar time complexity, but the iterative approach might save some function call overhead, leading to more efficient execution in some cases.
+
+Detailed explanations of both approaches, along with their corresponding code, are provided below. By presenting both methods, we offer a comprehensive view of how to tackle this problem, allowing for flexibility and understanding of different programming paradigms.
+
+
+Approach - Backtracking:
+--------------------------
+1) Initialize a Mapping: Create a dictionary that maps each digit from 2 to 9 to their corresponding letters on a telephone's buttons. For example, the digit '2' maps to "abc," '3' maps to "def," and so on.
+
+2) Base Case: Check if the input string digits is empty. If it is, return an empty list, as there are no combinations to generate.
+
+3) Recursive Backtracking:
+
+	a) Define Recursive Function: Create a recursive function, backtrack, that will be used to explore all possible combinations. It takes two parameters: combination, which holds the current combination of letters, and next_digits, which holds the remaining digits to be explored.
+	
+	b) Termination Condition: If next_digits is empty, it means that all digits have been processed, so append the current combination to the result.
+	
+	c) Exploration: If there are more digits to explore, take the first digit from next_digits and iterate over its corresponding letters in the mapping. For each letter, concatenate it to the current combination and recursively call the backtrack function with the new combination and the remaining digits.
+	
+	d) Example: If the input is "23", the first recursive call explores all combinations starting with 'a', 'b', and 'c' (from '2'), and the next level of recursive calls explores combinations starting with 'd', 'e', 'f' (from '3'), building combinations like "ad," "ae," "af," "bd," "be," etc.
+
+4) Result: Once the recursive exploration is complete, return the collected combinations as the final result. By using recursion, we ensure that all possible combinations are explored, and the result includes all valid letter combinations that the input digits can represent.
+
+This code can handle any input string containing digits from 2 to 9 and will return the possible letter combinations in any order. The function backtrack is used to handle the recursive exploration of combinations, and phone_map contains the mapping between digits and letters.
+
+
+Approach - Iterative:
+-----------------------
+1) Initialize a Mapping: Create a dictionary that maps each digit from 2 to 9 to their corresponding letters on a telephone's buttons.
+
+2) Base Case: If the input string digits is empty, return an empty list.
+
+3) Iteratively Build Combinations: Start with an empty combination in a list and iteratively build the combinations by processing each digit in the input string.
+	For each existing combination, append each corresponding letter for the current digit, building new combinations.
+
+4) Result: Return the generated combinations as the final result.
+
+
+Note:
+------
+If you are using the String in Backtracking problems then no need to backtrack because when you append something to String object, a new String object will be created and existing String will not be impacted. Also, append it while calling the recursive function. Look at the code present in "Letter Combinations of a Phone Number_approach2.java" file.
+
+If you really want to backtrack the solution/state. Let's say in Java, you could make use of StringBuilder which retains the memory assigned to it, just like array, stack, etc.. Backtracking needs stored state. Look at the code present in "Letter Combinations of a Phone Number_approach1.java" file.
